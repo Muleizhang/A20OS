@@ -80,10 +80,6 @@ skip_group() {
         return 0
     fi
 
-    if [[ $(uname -m) == "riscv64" && $g == "lua" ]]; then
-        return 0
-    fi
-
     # 2. 原有的常规跳过列表检测
     for s in "${SKIP_GROUPS[@]}"; do [[ $g == "$s" ]] && return 0; done
     return 1
