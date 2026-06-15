@@ -66,7 +66,6 @@ SKIP_GROUPS+=(ltp) # 单独执行
 
 # 下面是可以跑通但是为了方便测试跳过的
 #SKIP_GROUPS+=(iozone)
-SKIP_GROUPS+=(libcbench)
 # SKIP_GROUPS+=(netperf)
 # SKIP_GROUPS+=(iperf)
 # SKIP_GROUPS+=(busybox)
@@ -74,8 +73,8 @@ SKIP_GROUPS+=(libcbench)
 skip_group() {
     typeset g=$1 s
 
-    # 1. 检测如果是 riscv64 架构且测试组是 libcbench，则直接跳过
-    if [[ $(uname -m) == "riscv64" && $g == "libcbench" ]]; then
+    # Keep non-RISC-V libcbench disabled until those combinations are revalidated.
+    if [[ $(uname -m) != "riscv64" && $g == "libcbench" ]]; then
         return 0
     fi
 
