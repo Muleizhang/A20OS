@@ -60,7 +60,6 @@ blacklisted() {
 # ── test group skip list ───────────────────────────────────
 typeset -a SKIP_GROUPS
 SKIP_GROUPS+=(unixbench) # 不计分
-SKIP_GROUPS+=(cyclictest) # OOM跑不通
 #SKIP_GROUPS+=(lmbench) # 运行时长很长
 SKIP_GROUPS+=(ltp) # 单独执行
 
@@ -76,6 +75,11 @@ skip_group() {
     # Keep non-RISC-V musl libcbench disabled until that combination is revalidated.
     if [[ $(uname -m) != "riscv64" && $g == "libcbench" && $runtime != "glibc" ]]; then
         return 0
+    fi
+    if [[ $g == "cyclictest" ]]; then
+        if [[ $(uname -m) != "riscv64" || $runtime != "glibc" ]]; then
+            return 0
+        fi
     fi
 
     # 2. 原有的常规跳过列表检测
