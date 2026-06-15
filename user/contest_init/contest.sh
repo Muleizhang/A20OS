@@ -71,10 +71,10 @@ SKIP_GROUPS+=(ltp) # 单独执行
 # SKIP_GROUPS+=(busybox)
 
 skip_group() {
-    typeset g=$1 s
+    typeset g=$1 runtime=$2 s
 
-    # Keep non-RISC-V libcbench disabled until those combinations are revalidated.
-    if [[ $(uname -m) != "riscv64" && $g == "libcbench" ]]; then
+    # Keep non-RISC-V musl libcbench disabled until that combination is revalidated.
+    if [[ $(uname -m) != "riscv64" && $g == "libcbench" && $runtime != "glibc" ]]; then
         return 0
     fi
 
@@ -141,7 +141,7 @@ for script in /test/*/*_testcode.sh; do
     group=${group%_testcode.sh}
     typeset dir=${script%/*}
 
-    if skip_group "$group"; then
+    if skip_group "$group" "$runtime"; then
         print "[CONTEST][SKIP] $group"
         continue
     fi
