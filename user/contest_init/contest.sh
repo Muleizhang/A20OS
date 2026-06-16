@@ -133,10 +133,6 @@ SKIP_GROUPS+=(ltp) # 单独执行
 skip_group() {
     typeset g=$1 runtime=$2 s
 
-    # Keep non-RISC-V musl libcbench disabled until that combination is revalidated.
-    if [[ $(uname -m) != "riscv64" && $g == "libcbench" && $runtime != "glibc" ]]; then
-        return 0
-    fi
     if [[ $g == "cyclictest" ]]; then
         if [[ $(uname -m) != "riscv64" || $runtime != "glibc" ]]; then
             return 0
