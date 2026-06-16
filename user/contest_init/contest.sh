@@ -139,7 +139,9 @@ skip_group() {
         return 0
     fi
     if [[ $g == "cyclictest" ]]; then
-        if [[ $(uname -m) != "riscv64" || $runtime != "glibc" ]]; then
+        # RISC-V cyclictest passes for both glibc and musl historically; keep them.
+        # LoongArch cyclictest still times out -> skip on non-riscv64.
+        if [[ $(uname -m) != "riscv64" ]]; then
             return 0
         fi
     fi
