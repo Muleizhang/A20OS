@@ -133,6 +133,11 @@ SKIP_GROUPS+=(ltp) # 单独执行
 skip_group() {
     typeset g=$1 runtime=$2 s
 
+    # Only musl libctest is a leaderboard item. The glibc script leaves failing
+    # stress children behind and can destabilize later risky groups.
+    if [[ $g == "libctest" && $runtime != "musl" ]]; then
+        return 0
+    fi
     if [[ $g == "cyclictest" ]]; then
         if [[ $(uname -m) != "riscv64" || $runtime != "glibc" ]]; then
             return 0
