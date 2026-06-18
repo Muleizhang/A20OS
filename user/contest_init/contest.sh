@@ -464,7 +464,22 @@ run_ltp_bounded_subset() {
         setpgrp02 \
         setsockopt04 \
         sigaction02 sigsuspend01 \
-        timerfd02 timerfd_create01
+        timerfd02 timerfd_create01 \
+        fork10 \
+        ftest01 ftest02 ftest03 ftest04 ftest05 ftest06 ftest07 ftest08 \
+        futex_cmp_requeue01 futex_cmp_requeue02 \
+        futex_wait01 futex_wait02 futex_wait03 futex_wait04 futex_wait05 futex_wait_bitset01 \
+        futex_wake01 futex_wake03 \
+        madvise05 madvise10 \
+        mmap19 \
+        mprotect04 mprotect05 \
+        munlock02 munlockall01 \
+        posix_fadvise01 \
+        pselect01 pselect01_64 \
+        splice01 \
+        syscall01 \
+        tee01 \
+        vfork01 vfork02
     do
         run_ltp_case_with_timeout "$name" 60 || (( failed_cases++ ))
     done
