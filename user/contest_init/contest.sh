@@ -288,7 +288,11 @@ run_ltp_bounded_subset() {
         clock_settime01 clock_settime02 \
         close01 close02 confstr01 \
         connect01 copy_file_range03 \
-        creat01 creat03 creat04 creat08
+        creat01 creat03 creat04 creat08 \
+        dup01 dup02 dup03 dup04 dup05 dup06 dup07 \
+        dup201 dup202 dup203 dup204 dup205 dup206 dup207 \
+        dup3_01 dup3_02 \
+        epoll_create01 epoll_create1_01 epoll_ctl01
     do
         run_ltp_case_with_timeout "$name" 60 || (( failed_cases++ ))
     done
