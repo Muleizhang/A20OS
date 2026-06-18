@@ -370,7 +370,29 @@ run_ltp_bounded_subset() {
         read01 read04 \
         readlink01 \
         readv01 \
-        rmdir01 rmdir03
+        rmdir01 rmdir03 \
+        rt_sigaction03 rt_sigprocmask01 \
+        sbrk01 sbrk02 \
+        sched_getaffinity01 \
+        sched_getparam01 \
+        sched_getscheduler01 sched_getscheduler02 \
+        sched_rr_get_interval01 \
+        sched_setparam01 sched_setparam02 \
+        sched_setscheduler01 \
+        sched_yield01 \
+        select01 select02 select04 \
+        sendfile02 sendfile02_64 sendfile05 sendfile05_64 sendfile06 sendfile06_64 \
+        sendfile07 sendfile07_64 sendfile08 sendfile08_64 \
+        setegid01 \
+        setfsgid01 setfsgid02 \
+        setfsuid01 setfsuid02 \
+        setgid01 setgid02 \
+        setgroups01 setgroups02 \
+        setitimer02 \
+        setpgid01 \
+        setpgrp01 \
+        setpriority01 \
+        setregid01 setregid02
     do
         run_ltp_case_with_timeout "$name" 60 || (( failed_cases++ ))
     done
