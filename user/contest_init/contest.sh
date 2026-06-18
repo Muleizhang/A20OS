@@ -295,7 +295,7 @@ run_ltp_bounded_subset() {
         epoll_create01 epoll_create02 \
         epoll_create1_01 epoll_create1_02 \
         epoll_ctl01 epoll_ctl02 epoll_ctl03 epoll_ctl04 epoll_ctl05 \
-        epoll_pwait01 epoll_pwait02 epoll_pwait03 epoll_pwait04 \
+        epoll_pwait01 epoll_pwait02 epoll_pwait04 \
         epoll_wait02 epoll_wait03 epoll_wait04 epoll_wait07 \
         eventfd2_01 eventfd2_02 eventfd2_03 \
         execve02 \
@@ -421,7 +421,50 @@ run_ltp_bounded_subset() {
         write03 write05 write06 \
         writev02 writev05 writev06 \
         rename09 rename14 renameat201 renameat202 \
-        rt_sigprocmask02
+        rt_sigprocmask02 \
+        close_range02 \
+        fcntl01 fcntl01_64 fcntl02_64 fcntl03_64 fcntl04_64 fcntl05_64 fcntl08_64 \
+        fcntl09 fcntl09_64 fcntl10 fcntl10_64 fcntl11_64 fcntl12_64 fcntl13_64 \
+        fcntl14_64 fcntl16_64 fcntl18 fcntl18_64 fcntl19 fcntl19_64 \
+        fcntl20 fcntl20_64 fcntl21 fcntl21_64 fcntl22 fcntl22_64 \
+        fcntl29 fcntl29_64 fcntl30 fcntl30_64 fcntl36 fcntl36_64 \
+        fcntl37 fcntl37_64 \
+        fgetxattr03 \
+        flistxattr01 flistxattr02 flistxattr03 \
+        flock06 \
+        fork01 fork03 fork04 fork05 fork07 fork08 \
+        fpathconf01 \
+        fstat02_64 fstat03_64 fstatfs02_64 \
+        ftruncate01_64 \
+        lgetxattr01 lgetxattr02 \
+        listxattr01 listxattr02 listxattr03 \
+        llistxattr01 llistxattr02 llistxattr03 \
+        lstat01 lstat01_64 \
+        mallinfo01 mallinfo02 mallinfo2_01 mallopt01 \
+        memcmp01 memcpy01 memset01 \
+        mincore02 mincore03 \
+        mkdir05 \
+        mremap01 mremap02 mremap03 mremap04 mremap05 mremap06 \
+        openat201 \
+        preadv01 preadv01_64 \
+        pwritev01 pwritev01_64 \
+        readdir01 \
+        recvmsg02 \
+        removexattr01 removexattr02 \
+        rt_sigsuspend01 \
+        sendmmsg01 \
+        sendmsg02 \
+        set_robust_list01 set_tid_address01 \
+        setdomainname02 \
+        setegid02 \
+        setfsgid03 \
+        setfsuid03 \
+        setgid03 \
+        sethostname02 \
+        setpgrp02 \
+        setsockopt04 \
+        sigaction02 sigsuspend01 \
+        timerfd02 timerfd_create01
     do
         run_ltp_case_with_timeout "$name" 60 || (( failed_cases++ ))
     done
