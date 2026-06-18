@@ -348,7 +348,16 @@ run_ltp_bounded_subset() {
         listen01 \
         llseek02 llseek03 \
         lseek01 lseek02 lseek07 \
-        mkdir02 mkdir04
+        mkdir02 mkdir04 \
+        mkdirat01 \
+        mknod01 mknod02 mknod03 mknod04 mknod05 mknod08 \
+        mknodat01 \
+        mlock03 mlock04 \
+        mlockall01 \
+        mmap01 mmap02 mmap03 mmap04 mmap05 mmap09 mmap10 mmap11 mmap12 mmap15 mmap17 \
+        mprotect02 mprotect03 \
+        msync01 msync02 \
+        munmap01 munmap02
     do
         run_ltp_case_with_timeout "$name" 60 || (( failed_cases++ ))
     done
