@@ -332,7 +332,8 @@ run_ltp_bounded_subset() {
         getsid01 getsid02 \
         gettid01 \
         gettimeofday02 \
-        getuid01 getuid03
+        getuid01 getuid03 \
+        getxattr01
     do
         run_ltp_case_with_timeout "$name" 60 || (( failed_cases++ ))
     done
