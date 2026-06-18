@@ -333,7 +333,10 @@ run_ltp_bounded_subset() {
         gettid01 \
         gettimeofday02 \
         getuid01 getuid03 \
-        getxattr01
+        getxattr01 \
+        ioctl_ns07 \
+        inotify_init1_01 inotify_init1_02 \
+        inotify06
     do
         run_ltp_case_with_timeout "$name" 60 || (( failed_cases++ ))
     done
