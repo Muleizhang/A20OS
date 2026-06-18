@@ -357,7 +357,20 @@ run_ltp_bounded_subset() {
         mmap01 mmap02 mmap03 mmap04 mmap05 mmap09 mmap10 mmap11 mmap12 mmap15 mmap17 \
         mprotect02 mprotect03 \
         msync01 msync02 \
-        munmap01 munmap02
+        munmap01 munmap02 \
+        nanosleep01 \
+        nice01 nice02 nice03 \
+        open01 open03 open09 open10 \
+        openat01 \
+        pathconf01 \
+        pipe01 pipe02 pipe03 pipe04 pipe05 pipe08 pipe09 pipe10 pipe13 pipe14 pipe2_02 \
+        poll01 poll02 \
+        pread01 pread01_64 \
+        pwrite01 pwrite01_64 pwrite02 pwrite02_64 \
+        read01 read04 \
+        readlink01 \
+        readv01 \
+        rmdir01 rmdir03
     do
         run_ltp_case_with_timeout "$name" 60 || (( failed_cases++ ))
     done
