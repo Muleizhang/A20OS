@@ -263,7 +263,16 @@ run_ltp_bounded_subset() {
     # Running it directly blocks forever in sigsuspend(), so keep it blacklisted
     # while collecting bounded, real LTP output on both sides of the cgroup_fj point.
     typeset -i failed_cases=0
-    run_ltp_case_with_timeout cgroup_core03 60 || (( failed_cases++ ))
+    typeset name=
+    for name in \
+        abort01 abs01 \
+        accept01 accept02 accept03 accept4_01 \
+        access02 access03 access04 \
+        adjtimex01 alarm02 bind01 brk01 capget01 \
+        cgroup_core03
+    do
+        run_ltp_case_with_timeout "$name" 60 || (( failed_cases++ ))
+    done
     print "[CONTEST][LTP][SKIP] cgroup_fj_proc blacklisted_helper"
     run_ltp_case_with_timeout chdir04 60 || (( failed_cases++ ))
 
