@@ -198,6 +198,88 @@ run_ltp() {
     return 0
 }
 
+run_ltp_case_with_timeout() {
+    typeset name=$1
+    typeset -i timeout=${2:-60}
+    typeset -i elapsed=0
+
+    print "RUN LTP CASE $name"
+    "./$name" &
+    typeset pid=$!
+
+    while (( elapsed < timeout )); do
+        if kill -0 $pid 2>/dev/null; then
+            sleep 1
+            (( elapsed++ ))
+        else
+            wait $pid
+            typeset rc=$?
+            if (( rc == 0 )); then
+                print "END LTP CASE $name : 0"
+                return 0
+            else
+                print "FAIL LTP CASE $name : $rc"
+                return 1
+            fi
+        fi
+    done
+
+    print "[CONTEST][LTP][TIMEOUT] case=$name after ${timeout}s"
+    /busybox killall "$name" 2>/dev/null || killall "$name" 2>/dev/null
+    print "FAIL LTP CASE $name : 124"
+    return 1
+}
+
+run_ltp_bounded_subset() {
+    typeset runtime=$1
+    typeset arch=$(uname -m)
+    typeset dir="/test/$runtime/ltp/testcases/bin"
+
+    if [[ $arch != "riscv64" || $runtime != "glibc" ]]; then
+        print "[CONTEST][SKIP] runtime=$runtime group=ltp current_phase=bounded_rv_glibc_only"
+        return 0
+    fi
+
+    print "[CONTEST][RUN] runtime=$runtime group=ltp mode=bounded_subset case_timeout=60s"
+    print "#### OS COMP TEST GROUP START ltp-$runtime ####"
+
+    if [[ ! -d $dir ]]; then
+        print "[CONTEST][ERROR] missing $dir"
+        print "#### OS COMP TEST GROUP END ltp-$runtime ####"
+        print "[CONTEST][FAIL] ltp bounded_subset missing_dir"
+        (( failed++ ))
+        return 1
+    fi
+
+    cd "$dir" || {
+        print "[CONTEST][ERROR] cd $dir failed"
+        print "#### OS COMP TEST GROUP END ltp-$runtime ####"
+        print "[CONTEST][FAIL] ltp bounded_subset cd_failed"
+        (( failed++ ))
+        return 1
+    }
+
+    # cgroup_fj_proc is a signal-driven helper, not a standalone LTP case.
+    # Running it directly blocks forever in sigsuspend(), so keep it blacklisted
+    # while collecting bounded, real LTP output on both sides of the cgroup_fj point.
+    typeset -i failed_cases=0
+    run_ltp_case_with_timeout cgroup_core03 60 || (( failed_cases++ ))
+    print "[CONTEST][LTP][SKIP] cgroup_fj_proc blacklisted_helper"
+    run_ltp_case_with_timeout chdir04 60 || (( failed_cases++ ))
+
+    cd /
+    print "#### OS COMP TEST GROUP END ltp-$runtime ####"
+    (( executed++ ))
+    if (( failed_cases == 0 )); then
+        print "[CONTEST][PASS] ltp bounded_subset_completed"
+        return 0
+    fi
+
+    print "[CONTEST][FAIL] ltp bounded_subset_failed cases=$failed_cases"
+    (( failed++ ))
+    return 1
+}
+
 # ── main ────────────────────────────────────────────────────
 typeset -i executed=0 failed=0
 
@@ -249,10 +331,9 @@ for group in cyclictest iozone lmbench; do
     done
 done
 
-# Current scoring phase intentionally stops before LTP.  Keep the skip explicit
-# so the entry preserves completed iozone/lmbench scores and does not spend the
-# remaining QEMU budget on unrelated long-running tests.
-print "[CONTEST][SKIP] group=ltp current_phase=iozone_lmbench"
+for runtime in glibc musl; do
+    run_ltp_bounded_subset "$runtime"
+done
 
 print "[CONTEST] Done: $executed tests, $failed failures"
 
