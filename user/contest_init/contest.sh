@@ -302,6 +302,11 @@ run_ltp_bounded_subset() {
         exit01 exit02 exit_group01 \
         faccessat01 faccessat02 faccessat201 faccessat202 \
         fallocate03 \
+        fchdir01 fchdir02 fchdir03 \
+        fchmod01 fchmod02 fchmod03 fchmod04 fchmod05 fchmod06 \
+        fchmodat01 fchmodat02 \
+        fchown01 fchown02 fchown03 fchown04 fchown05 \
+        fchownat01 fchownat02 \
         fcntl02 fcntl03 fcntl04 fcntl05 fcntl08 \
         fcntl11 fcntl12 fcntl13 fcntl14 fcntl16 \
         fdatasync01 fdatasync02 \
