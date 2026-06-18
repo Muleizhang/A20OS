@@ -279,6 +279,13 @@ run_ltp_bounded_subset() {
     done
     print "[CONTEST][LTP][SKIP] cgroup_fj_proc blacklisted_helper"
     run_ltp_case_with_timeout chdir04 60 || (( failed_cases++ ))
+    for name in \
+        chmod01 chmod03 chmod05 chmod06 chmod07 \
+        chown01 chown02 chown03 chown04 chown05 \
+        chroot01
+    do
+        run_ltp_case_with_timeout "$name" 60 || (( failed_cases++ ))
+    done
 
     cd /
     print "#### OS COMP TEST GROUP END ltp-$runtime ####"
