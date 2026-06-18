@@ -392,7 +392,36 @@ run_ltp_bounded_subset() {
         setpgid01 \
         setpgrp01 \
         setpriority01 \
-        setregid01 setregid02
+        setregid01 setregid02 setregid04 \
+        setresgid01 setresgid02 setresgid03 setresgid04 \
+        setresuid01 setresuid02 setresuid03 setresuid04 setresuid05 \
+        setreuid01 setreuid03 setreuid04 setreuid06 setreuid07 \
+        setrlimit04 setrlimit05 \
+        settimeofday01 \
+        setuid01 setuid03 setuid04 \
+        sigaltstack01 sigaltstack02 \
+        signal01 signal02 signal03 signal04 signal05 \
+        sigprocmask01 sigwait01 \
+        socket02 \
+        stat01 stat01_64 stat02 stat02_64 \
+        statx02 \
+        symlink02 symlink04 symlinkat01 \
+        sysinfo01 sysinfo02 \
+        time01 \
+        timer_delete02 timer_getoverrun01 timer_gettime01 \
+        times01 \
+        truncate02 truncate02_64 \
+        umask01 \
+        uname02 uname04 \
+        unlink05 unlink07 unlinkat01 \
+        utime07 \
+        wait01 wait02 wait401 wait402 \
+        waitid03 waitid04 waitid09 \
+        waitpid03 waitpid06 waitpid07 waitpid09 waitpid10 waitpid11 waitpid12 \
+        write03 write05 write06 \
+        writev02 writev05 writev06 \
+        rename09 rename14 renameat201 renameat202 \
+        rt_sigprocmask02
     do
         run_ltp_case_with_timeout "$name" 60 || (( failed_cases++ ))
     done
