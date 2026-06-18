@@ -297,7 +297,17 @@ run_ltp_bounded_subset() {
         epoll_ctl01 epoll_ctl02 epoll_ctl03 epoll_ctl04 epoll_ctl05 \
         epoll_pwait01 epoll_pwait02 epoll_pwait03 epoll_pwait04 \
         epoll_wait02 epoll_wait03 epoll_wait04 epoll_wait07 \
-        eventfd2_01 eventfd2_02 eventfd2_03
+        eventfd2_01 eventfd2_02 eventfd2_03 \
+        execve02 \
+        exit01 exit02 exit_group01 \
+        faccessat01 faccessat02 faccessat201 faccessat202 \
+        fallocate03 \
+        fcntl02 fcntl03 fcntl04 fcntl05 fcntl08 \
+        fcntl11 fcntl12 fcntl13 fcntl14 fcntl16 \
+        fdatasync01 fdatasync02 \
+        flock01 flock02 flock03 flock04 \
+        fstat02 fstat03 fstatfs02 \
+        ftruncate01 ftruncate03
     do
         run_ltp_case_with_timeout "$name" 60 || (( failed_cases++ ))
     done
