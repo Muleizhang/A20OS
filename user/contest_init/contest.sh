@@ -341,7 +341,14 @@ run_ltp_bounded_subset() {
         getxattr01 \
         ioctl_ns07 \
         inotify_init1_01 inotify_init1_02 \
-        inotify06
+        inotify06 \
+        kill03 kill05 kill06 kill07 kill08 kill09 kill10 kill12 \
+        lchown01 \
+        link02 linkat01 \
+        listen01 \
+        llseek02 llseek03 \
+        lseek01 lseek02 lseek07 \
+        mkdir02 mkdir04
     do
         run_ltp_case_with_timeout "$name" 60 || (( failed_cases++ ))
     done
