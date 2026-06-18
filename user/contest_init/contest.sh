@@ -292,7 +292,12 @@ run_ltp_bounded_subset() {
         dup01 dup02 dup03 dup04 dup05 dup06 dup07 \
         dup201 dup202 dup203 dup204 dup205 dup206 dup207 \
         dup3_01 dup3_02 \
-        epoll_create01 epoll_create1_01 epoll_ctl01
+        epoll_create01 epoll_create02 \
+        epoll_create1_01 epoll_create1_02 \
+        epoll_ctl01 epoll_ctl02 epoll_ctl03 epoll_ctl04 epoll_ctl05 \
+        epoll_pwait01 epoll_pwait02 epoll_pwait03 epoll_pwait04 \
+        epoll_wait02 epoll_wait03 epoll_wait04 epoll_wait07 \
+        eventfd2_01 eventfd2_02 eventfd2_03
     do
         run_ltp_case_with_timeout "$name" 60 || (( failed_cases++ ))
     done
