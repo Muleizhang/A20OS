@@ -307,7 +307,22 @@ run_ltp_bounded_subset() {
         fdatasync01 fdatasync02 \
         flock01 flock02 flock03 flock04 \
         fstat02 fstat03 fstatfs02 \
-        ftruncate01 ftruncate03
+        ftruncate01 ftruncate03 ftruncate03_64 \
+        getcontext01 getcwd02 \
+        getdomainname01 \
+        getegid01 getegid01_16 getegid02 getegid02_16 \
+        geteuid01 geteuid02 \
+        getgid01 getgid03 \
+        getgroups01 getgroups03 \
+        gethostbyname_r01 \
+        gethostid01 \
+        gethostname01 gethostname02 \
+        getitimer01 getitimer02 \
+        getpagesize01 \
+        getpgid01 getpgid02 \
+        getpgrp01 \
+        getpid01 getpid02 \
+        getppid01 getppid02
     do
         run_ltp_case_with_timeout "$name" 60 || (( failed_cases++ ))
     done
