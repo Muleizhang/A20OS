@@ -283,7 +283,10 @@ run_ltp_bounded_subset() {
         chmod01 chmod03 chmod05 chmod06 chmod07 \
         chown01 chown02 chown03 chown04 chown05 \
         chroot01 chroot03 chroot04 \
-        clock_adjtime01 clock_getres01 clock_gettime02 clock_gettime04
+        clock_adjtime01 clock_getres01 clock_gettime02 clock_gettime04 \
+        clock_nanosleep02 clock_nanosleep04 \
+        clock_settime01 clock_settime02 \
+        close01 close02 confstr01
     do
         run_ltp_case_with_timeout "$name" 60 || (( failed_cases++ ))
     done
