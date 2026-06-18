@@ -267,8 +267,12 @@ run_ltp_bounded_subset() {
     for name in \
         abort01 abs01 \
         accept01 accept02 accept03 accept4_01 \
-        access02 access03 access04 \
-        adjtimex01 alarm02 bind01 brk01 capget01 \
+        access01 access02 access03 access04 \
+        adjtimex01 adjtimex02 adjtimex03 \
+        alarm02 alarm03 alarm05 alarm06 alarm07 \
+        bind01 bind02 bind03 bind04 bind05 \
+        brk01 capget01 capget02 \
+        capset01 capset02 capset03 capset04 \
         cgroup_core03
     do
         run_ltp_case_with_timeout "$name" 60 || (( failed_cases++ ))
