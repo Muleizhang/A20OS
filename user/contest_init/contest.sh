@@ -322,7 +322,11 @@ run_ltp_bounded_subset() {
         getpgid01 getpgid02 \
         getpgrp01 \
         getpid01 getpid02 \
-        getppid01 getppid02
+        getppid01 getppid02 \
+        getpriority01 \
+        getrandom01 getrandom02 getrandom03 getrandom04 \
+        getresgid01 getresgid02 getresgid03 \
+        getresuid01 getresuid02 getresuid03
     do
         run_ltp_case_with_timeout "$name" 60 || (( failed_cases++ ))
     done
