@@ -479,7 +479,25 @@ run_ltp_bounded_subset() {
         splice01 \
         syscall01 \
         tee01 \
-        vfork01 vfork02
+        vfork01 vfork02 \
+        asapi_01 asapi_02 asapi_03 \
+        atof01 \
+        clone03 clone04 clone05 clone06 clone07 clone08 clone302 \
+        fptest01 fptest02 \
+        inode01 \
+        nextafter01 \
+        personality01 personality02 \
+        pselect03 pselect03_64 \
+        sched_get_priority_max02 sched_get_priority_min02 \
+        sched_setparam03 sched_setscheduler04 \
+        semctl06 semctl07 \
+        semop01 semop04 \
+        shmat04 \
+        shmdt01 shmdt02 \
+        shmt02 shmt03 shmt04 shmt05 shmt06 shmt07 shmt08 shmt09 shmt10 \
+        splice09 \
+        string01 \
+        utsname01 utsname04
     do
         run_ltp_case_with_timeout "$name" 60 || (( failed_cases++ ))
     done
