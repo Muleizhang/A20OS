@@ -497,7 +497,15 @@ run_ltp_bounded_subset() {
         shmt02 shmt03 shmt04 shmt05 shmt06 shmt07 shmt08 shmt09 shmt10 \
         splice09 \
         string01 \
-        utsname01 utsname04
+        utsname01 utsname04 \
+        genacos genasin genatan genatan2 genceil gencos gencosh genexp \
+        genfloor genfrexp genldexp genlog genlog10 genpow gensin gensinh \
+        gensqrt gentan gentanh \
+        posix_fadvise01_64 posix_fadvise02 posix_fadvise02_64 \
+        pth_str02 \
+        sched_tc2 sched_tc3 sched_tc4 sched_tc5 \
+        stream01 stream02 stream03 stream04 stream05 \
+        vmsplice01
     do
         run_ltp_case_with_timeout "$name" 60 || (( failed_cases++ ))
     done
