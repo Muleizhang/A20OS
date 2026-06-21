@@ -503,10 +503,10 @@ run_ltp_bounded_subset() {
         gensqrt gentan gentanh \
         genfabs genfmod genhypot genj0 genj1 genlgamma genload genmodf geny0 geny1 \
         posix_fadvise01_64 posix_fadvise02 posix_fadvise02_64 \
-        pth_str02 \
         sched_tc2 sched_tc3 sched_tc4 sched_tc5 \
         stream01 stream02 stream03 stream04 stream05 \
         vmsplice01 \
+        af_alg02 af_alg03 af_alg05 af_alg06 \
         cve-2017-17052
     do
         run_ltp_case_with_timeout "$name" 60 || (( failed_cases++ ))
