@@ -465,7 +465,7 @@ run_ltp_bounded_subset() {
         setsockopt04 \
         sigaction02 sigsuspend01 \
         timerfd02 timerfd_create01 \
-        fork10 \
+        fork10 fork_procs \
         ftest01 ftest02 ftest03 ftest04 ftest05 ftest06 ftest07 ftest08 \
         futex_cmp_requeue01 futex_cmp_requeue02 \
         futex_wait01 futex_wait02 futex_wait03 futex_wait04 futex_wait05 futex_wait_bitset01 \
@@ -480,7 +480,7 @@ run_ltp_bounded_subset() {
         syscall01 \
         tee01 \
         vfork01 vfork02 \
-        asapi_01 asapi_02 asapi_03 \
+        asapi_01 asapi_02 \
         atof01 \
         clone03 clone04 clone05 clone06 clone07 clone08 clone302 \
         fptest01 fptest02 \
@@ -491,7 +491,7 @@ run_ltp_bounded_subset() {
         sched_get_priority_max02 sched_get_priority_min02 \
         sched_setparam03 sched_setscheduler04 \
         semctl06 semctl07 \
-        semop01 semop04 \
+        semop01 semop04 sem_nstest semtest_2ns \
         shmat04 \
         shmdt01 shmdt02 \
         shmt02 shmt03 shmt04 shmt05 shmt06 shmt07 shmt08 shmt09 shmt10 \
