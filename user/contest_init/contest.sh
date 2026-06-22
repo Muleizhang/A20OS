@@ -508,7 +508,8 @@ run_ltp_bounded_subset() {
         vmsplice01 \
         af_alg02 af_alg03 af_alg05 af_alg06 \
         cve-2017-17052 \
-        print_caps tst_ansi_color.sh tst_exit tst_hexdump
+        print_caps tst_ansi_color.sh tst_exit tst_hexdump \
+        clone01 diotest1 diotest4 memcontrol01 mmap001
     do
         run_ltp_case_with_timeout "$name" 60 || (( failed_cases++ ))
     done
