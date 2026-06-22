@@ -507,7 +507,8 @@ run_ltp_bounded_subset() {
         stream01 stream02 stream03 stream04 stream05 \
         vmsplice01 \
         af_alg02 af_alg03 af_alg05 af_alg06 \
-        cve-2017-17052
+        cve-2017-17052 \
+        print_caps tst_ansi_color.sh tst_exit tst_hexdump
     do
         run_ltp_case_with_timeout "$name" 60 || (( failed_cases++ ))
     done
