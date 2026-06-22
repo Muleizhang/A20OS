@@ -1,0 +1,76 @@
+
+======================================
+    A20OS Kernel 
+======================================
+Initializing system...
+[INIT] Trap initialized
+[INIT] UART initialized
+[INIT] Timer initialized
+[INIT] Timekeeping initialized
+[MM] Buddy+Slab: 131072 frames, 128865 free (503 MB)
+[INIT] Memory initialized
+[INIT] Random initialized
+[INIT] Boot arguments parsed
+[DRIVER] registered driver 'dw-sdio' (class=2)
+[DRIVER] registered driver 'virtio-blk' (class=2)
+[DRIVER] registered driver 'ns16550a-uart' (class=1)
+[DRIVER] registered driver 'ls2k-gmac' (class=3)
+[DRIVER] registered driver 'starfive-gmac' (class=3)
+[DRIVER] registered driver 'virtio-net' (class=3)
+[DRIVER] core initialized: 6 drivers registered
+[INIT] Driver core initialized
+[DRIVER] registered bus 'pci'
+[DRIVER] registered device 'pci-1b36:0008-0' (bus=pci)
+[DRIVER] registered device 'pci-1af4:1001-1' (bus=pci)
+[DRIVER] registered device 'pci-1af4:1000-2' (bus=pci)
+[DRIVER] registered device 'pci-1af4:1001-3' (bus=pci)
+[BUS] pci: found 4 devices (ecam=0x20000000, bus 0-127)
+[INIT] Board devices enumerated (qemu-virt-la64)
+[DRIVER] probe_all: 0 devices probed
+[INIT] Drivers probed
+[RAMFS] Initialized, root inode 0
+[INIT] VFS initialized
+[PCI] Scanning bus 0...
+[PCI] Found virtio-blk at 00:01.0
+[PCI] Found virtio-net at 00:02.0
+[PCI] Found virtio-blk at 00:03.0
+[PCI] Found 3 virtio device(s)
+[VIRTIO-NET0] ready legacy=0 mac=52:54:00:12:34:56
+[LWIP] netif en2 attached to virtio-net0 (unconfigured)
+[LWIP] initialized: IPv4 IPv6 TCP UDP RAW ICMP DHCP DNS loopif
+[NET] socket layer initialized
+[INIT] Network initialized
+[VIRTIO0] Block device ready: capacity=262144 sectors (128 MB)
+[INIT] Device 0 -> /bin (fat32)
+[VIRTIO1] Block device ready: capacity=8388608 sectors (4096 MB)
+[EXT4] Mounted: block_size=4096 groups=32 inode_size=256 inodes/group=8192
+[INIT] Device 1 -> /test (ext4)
+[VIRTIO2] Probe failed
+[INIT] Process manager initialized
+[INIT] System ready
+
+[1;36m    _    ____   ___   ___  ____  
+   / \  |___ \ / _ \ / _ \/ ___| 
+  / _ \   __) | | | | | | \___ \ 
+ / ___ \ / __/| |_| | |_| |___) |
+/_/   \_\_____|\___/ \___/|____/ 
+[0mWelcome to A20OS!
+
+[PROC] user task pid=2 entry=0x104d8 sp=0x3ffffe90
+[LIBLINK] copied /lib/ld-linux-loongarch-lp64d.so.1
+[LIBLINK] copied /lib64/ld-linux-loongarch-lp64d.so.1
+[LIBLINK] glibc loader ready from /test/glibc/lib
+[LIBLINK] copied /lib/ld-musl-loongarch-lp64d.so.1
+[LIBLINK] copied /lib64/ld-musl-loongarch-lp64d.so.1
+[LIBLINK] musl loader ready from /test/musl/lib
+#### OS COMP TEST GROUP START busybox-glibc ####
+testcase busybox echo success
+testcase busybox printf success
+busybox true status: 0
+#### OS COMP TEST GROUP END busybox-glibc ####
+#### OS COMP TEST GROUP START busybox-musl ####
+testcase busybox echo success
+testcase busybox printf success
+busybox true status: 0
+#### OS COMP TEST GROUP END busybox-musl ####
+System is going down for power-off NOW.
