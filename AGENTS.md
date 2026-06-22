@@ -14,7 +14,7 @@
 
 ## 当前基线
 
-- 当前本地 HEAD：`5377443 expand bounded ltp local fs tail`。
+- 当前本地 HEAD：`d649244 fix busybox kill10 target`。
 - 最新可用线上 Accepted 结果：`5027702d`，来自 `/home/muleizh/Downloads/new.html`。
   - 提交时间：`2026-06-22 14:08:01`。
   - 评测时间：`2026-06-22 14:34:28.724232+08:00` 到 `2026-06-22 16:03:44.400848+08:00`。
@@ -80,7 +80,7 @@
 | 顺序 | 项目 | 当前分 / 参考 | 难度 | 问题点 | 修复循环 | 验证循环 | 状态/完成记录 |
 | --- | --- | ---: | --- | --- | --- | --- | --- |
 | 0 | lua | `36 / 36` | 无需修 | 5027702d 四组均 `9/9`。 | 不改入口。 | 只在其他改动后保护回归。 | 已完成/保护。 |
-| 1 | busybox | `214 / 216`，best sane `218` | 低 | `busybox kill 10` 四组均 `0/1`；musl `hwclock` RV/LA 均失败，串口为 `RTC_RD_TIME: Not a tty`。 | 每轮只修一个小簇：先 `kill 10`，再 musl `hwclock`；分别定位 signal/kill 语义和 RTC ioctl/tty 兼容。 | 先跑对应 busybox 单项，再跑 busybox 四组；确认不影响 basic/lua；需要产物时再 `make all`。 | 部分完成：本轮已修 `busybox kill 10`，日志 `test-results/20260623-5377443-busybox-kill10`；RV/LA x glibc/musl 官方 busybox 脚本追加 hidden `kill 10` 均输出 `testcase busybox kill 10 success`，`make all` 通过并生成四个产物；musl `hwclock` 仍待处理。完成 commit 待生成。 |
+| 1 | busybox | `214 / 216`，best sane `218` | 低 | `busybox kill 10` 四组均 `0/1`；musl `hwclock` RV/LA 均失败，串口为 `RTC_RD_TIME: Not a tty`。 | 每轮只修一个小簇：先 `kill 10`，再 musl `hwclock`；分别定位 signal/kill 语义和 RTC ioctl/tty 兼容。 | 先跑对应 busybox 单项，再跑 busybox 四组；确认不影响 basic/lua；需要产物时再 `make all`。 | 本地完成：`busybox kill 10` 已由 commit `d649244` 修复，日志 `test-results/20260623-5377443-busybox-kill10`；`busybox hwclock` 本轮修复，日志 `test-results/20260623-d649244-busybox-hwclock`；RV/LA x glibc/musl 官方 busybox 脚本追加 hidden `kill 10` 均输出 `testcase busybox hwclock success` 和 `testcase busybox kill 10 success`，`make all` 通过并生成四个产物；等待下一次线上验证。hwclock 完成 commit 待生成。 |
 | 2 | basic | `352 / 408` | 低-中 | `mount/umount` 四组全 0；`pipe` 在 LA glibc 和 musl 两架构缺；`brk` 在 RV glibc、LA musl 部分缺。 | 分三簇串行：`mount/umount`、`pipe`、`brk`；每轮只修一簇。 | 先跑对应 basic 子项，再跑 basic 四组；如涉及 VFS/VM 公共路径，再跑 busybox smoke 和 `make all`。 | 待处理。 |
 | 3 | libctest-musl | `434 / 434`，best sane `447` | 中 | 对旧榜首无差距；明细中 musl `crypt` 动/静态、`pleval` 静态为 0；glibc libctest 继续 skip。 | basic/busybox 完成后再考虑；先单项提取失败原因，不碰 glibc libctest 入口。 | musl libctest 单项；确认项目仍 completed。 | 暂缓。 |
 | 4 | LTP 线上 bounded 修复 | `13 / 122100`，sane best `288000` | 中 | 线上 RV/glibc bounded 失败 44 个 case；大量 file metadata/xattr/path case 报 `ENOSPC`，另有 `clock_gettime04` timing、`select04` timeout、`futex_cmp_requeue01` ETIMEDOUT；musl/LA LTP 仍 skip。 | 先禁止扩窗；复现并定位线上 ENOSPC/磁盘污染来源，再按小簇处理 timing/select/futex。 | 本地复现失败簇；跑完整 RV/glibc bounded after，必须出现 `[CONTEST][PASS] ltp bounded_subset_completed`；再 `make all`。 | 待处理。 |
