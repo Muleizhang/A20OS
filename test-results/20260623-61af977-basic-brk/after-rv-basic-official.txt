@@ -1,0 +1,495 @@
+
+OpenSBI v1.7
+   ____                    _____ ____ _____
+  / __ \                  / ____|  _ \_   _|
+ | |  | |_ __   ___ _ __ | (___ | |_) || |
+ | |  | | '_ \ / _ \ '_ \ \___ \|  _ < | |
+ | |__| | |_) |  __/ | | |____) | |_) || |_
+  \____/| .__/ \___|_| |_|_____/|____/_____|
+        | |
+        |_|
+
+Platform Name               : riscv-virtio,qemu
+Platform Features           : medeleg
+Platform HART Count         : 1
+Platform IPI Device         : aclint-mswi
+Platform Timer Device       : aclint-mtimer @ 10000000Hz
+Platform Console Device     : uart8250
+Platform HSM Device         : ---
+Platform PMU Device         : ---
+Platform Reboot Device      : syscon-reboot
+Platform Shutdown Device    : syscon-poweroff
+Platform Suspend Device     : ---
+Platform CPPC Device        : ---
+Firmware Base               : 0x80000000
+Firmware Size               : 317 KB
+Firmware RW Offset          : 0x40000
+Firmware RW Size            : 61 KB
+Firmware Heap Offset        : 0x46000
+Firmware Heap Size          : 37 KB (total), 2 KB (reserved), 11 KB (used), 23 KB (free)
+Firmware Scratch Size       : 4096 B (total), 1400 B (used), 2696 B (free)
+Runtime SBI Version         : 3.0
+Standard SBI Extensions     : time,rfnc,ipi,base,hsm,srst,pmu,dbcn,fwft,legacy,dbtr,sse
+Experimental SBI Extensions : none
+
+Domain0 Name                : root
+Domain0 Boot HART           : 0
+Domain0 HARTs               : 0*
+Domain0 Region00            : 0x0000000000100000-0x0000000000100fff M: (I,R,W) S/U: (R,W)
+Domain0 Region01            : 0x0000000010000000-0x0000000010000fff M: (I,R,W) S/U: (R,W)
+Domain0 Region02            : 0x0000000002000000-0x000000000200ffff M: (I,R,W) S/U: ()
+Domain0 Region03            : 0x0000000080040000-0x000000008004ffff M: (R,W) S/U: ()
+Domain0 Region04            : 0x0000000080000000-0x000000008003ffff M: (R,X) S/U: ()
+Domain0 Region05            : 0x000000000c400000-0x000000000c5fffff M: (I,R,W) S/U: (R,W)
+Domain0 Region06            : 0x000000000c000000-0x000000000c3fffff M: (I,R,W) S/U: (R,W)
+Domain0 Region07            : 0x0000000000000000-0xffffffffffffffff M: () S/U: (R,W,X)
+Domain0 Next Address        : 0x0000000080200000
+Domain0 Next Arg1           : 0x00000000bfe00000
+Domain0 Next Mode           : S-mode
+Domain0 SysReset            : yes
+Domain0 SysSuspend          : yes
+
+Boot HART ID                : 0
+Boot HART Domain            : root
+Boot HART Priv Version      : v1.12
+Boot HART Base ISA          : rv64imafdch
+Boot HART ISA Extensions    : sstc,zicntr,zihpm,zicboz,zicbom,sdtrig,svadu
+Boot HART PMP Count         : 16
+Boot HART PMP Granularity   : 2 bits
+Boot HART PMP Address Bits  : 54
+Boot HART MHPM Info         : 16 (0x0007fff8)
+Boot HART Debug Triggers    : 2 triggers
+Boot HART MIDELEG           : 0x0000000000001666
+Boot HART MEDELEG           : 0x0000000000f4b509
+
+======================================
+    A20OS Kernel 
+======================================
+Initializing system...
+[INIT] Trap initialized
+[INIT] UART initialized
+[INIT] Timer initialized
+[INIT] Timekeeping initialized
+[MM] Buddy+Slab: 262144 frames, 259152 free (1012 MB)
+[INIT] Memory initialized
+[INIT] Random initialized
+[FDT] dtb_ptr=0xbfe00000
+[FDT] no bootargs extracted
+[INIT] Boot arguments parsed
+[DRIVER] registered driver 'dw-sdio' (class=2)
+[DRIVER] registered driver 'virtio-blk' (class=2)
+[DRIVER] registered driver 'ns16550a-uart' (class=1)
+[DRIVER] registered driver 'ls2k-gmac' (class=3)
+[DRIVER] registered driver 'starfive-gmac' (class=3)
+[DRIVER] registered driver 'virtio-net' (class=3)
+[DRIVER] core initialized: 6 drivers registered
+[INIT] Driver core initialized
+[DRIVER] registered bus 'virtio-mmio'
+[DRIVER] registered device 'virtio-blk0' (bus=virtio-mmio)
+[DRIVER] registered device 'virtio-blk1' (bus=virtio-mmio)
+[DRIVER] registered device 'virtio-net4' (bus=virtio-mmio)
+[BUS] virtio-mmio: found 3 devices (base=0xffffffc010001000 irq_base=1)
+[INIT] Board devices enumerated (qemu-virt-rv64)
+[DRIVER] probe_all: 0 devices probed
+[INIT] Drivers probed
+[RAMFS] Initialized, root inode 0
+[INIT] VFS initialized
+[VIRTIO-NET0] ready legacy=0 mac=52:54:00:12:34:56
+[LWIP] netif en2 attached to virtio-net0 (unconfigured)
+[LWIP] initialized: IPv4 IPv6 TCP UDP RAW ICMP DHCP DNS loopif
+[NET] socket layer initialized
+[INIT] Network initialized
+[VIRTIO0] Block device ready: capacity=262144 sectors (128 MB)
+[INIT] Device 0 -> /bin (fat32)
+[VIRTIO1] Block device ready: capacity=8388608 sectors (4096 MB)
+[EXT4] Mounted: block_size=4096 groups=32 inode_size=256 inodes/group=8192
+[INIT] Device 1 -> /test (ext4)
+[VIRTIO2] Probe failed
+[INIT] Process manager initialized
+[INIT] System ready
+
+[1;36m    _    ____   ___   ___  ____  
+   / \  |___ \ / _ \ / _ \/ ___| 
+  / _ \   __) | | | | | | \___ \ 
+ / ___ \ / __/| |_| | |_| |___) |
+/_/   \_\_____|\___/ \___/|____/ 
+[0mWelcome to A20OS!
+
+[PROC] user task pid=2 entry=0x10440 sp=0x3ffffe90
+[LIBLINK] copied /lib/ld-linux-riscv64-lp64d.so.1
+[LIBLINK] copied /lib64/ld-linux-riscv64-lp64d.so.1
+[LIBLINK] glibc loader ready from /test/glibc/lib
+[LIBLINK] copied /lib/ld-musl-riscv64.so.1
+[LIBLINK] copied /lib64/ld-musl-riscv64.so.1
+[LIBLINK] musl loader ready from /test/musl/lib
+#### OS COMP TEST GROUP START basic-glibc ####
+#### OS COMP TEST GROUP START basic-glibc ####
+Testing brk :
+========== START test_brk ==========
+Before alloc,heap pos: 5976064
+After alloc,heap pos: 5976128
+Alloc again,heap pos: 5976192
+========== END test_brk ==========
+Testing chdir :
+========== START test_chdir ==========
+chdir ret: 0
+  current working dir : /test/glibc/basic/test_chdir
+========== END test_chdir ==========
+Testing clone :
+========== START test_clone ==========
+  Child says successfully!
+clone process successfully.
+pid:7
+========== END test_clone ==========
+Testing close :
+========== START test_close ==========
+  close 3 success.
+========== END test_close ==========
+Testing dup2 :
+========== START test_dup2 ==========
+  from fd 100
+========== END test_dup2 ==========
+Testing dup :
+========== START test_dup ==========
+  new fd is 3.
+========== END test_dup ==========
+Testing execve :
+========== START test_execve ==========
+  I am test_echo.
+execve success.
+========== END main ==========
+Testing exit :
+========== START test_exit ==========
+exit OK.
+========== END test_exit ==========
+Testing fork :
+========== START test_fork ==========
+  child process.
+  parent process. wstatus:0
+========== END test_fork ==========
+Testing fstat :
+========== START test_fstat ==========
+fstat ret: 0
+fstat: dev: 0, inode: 131106, mode: 33188, nlink: 1, size: 52, atime: 1781613072, mtime: 1781613072, ctime: 1781613072
+========== END test_fstat ==========
+Testing getcwd :
+========== START test_getcwd ==========
+getcwd: /test/glibc/basic successfully!
+========== END test_getcwd ==========
+Testing getdents :
+========== START test_getdents ==========
+open fd:3
+getdents fd:488
+getdents success.
+.
+
+========== END test_getdents ==========
+Testing getpid :
+========== START test_getpid ==========
+getpid success.
+pid = 6
+========== END test_getpid ==========
+Testing getppid :
+========== START test_getppid ==========
+  getppid success. ppid : 5
+========== END test_getppid ==========
+Testing gettimeofday :
+========== START test_gettimeofday ==========
+gettimeofday success.
+start:16912491, end:16912514
+interval: 23
+========== END test_gettimeofday ==========
+Testing mkdir_ :
+========== START test_mkdir ==========
+mkdir ret: -17
+  mkdir success.
+========== END test_mkdir ==========
+Testing mmap :
+========== START test_mmap ==========
+file len: 27
+mmap content:   Hello, mmap successfully!
+========== END test_mmap ==========
+Testing mount :
+========== START test_mount ==========
+Mounting dev:/dev/vda2 to ./mnt
+mount return: 0
+mount successfully
+umount return: 0
+========== END test_mount ==========
+Testing munmap :
+========== START test_munmap ==========
+file len: 27
+munmap return: 0
+munmap successfully!
+========== END test_munmap ==========
+Testing openat :
+========== START test_openat ==========
+open dir fd: 3
+openat fd: 4
+openat success.
+========== END test_openat ==========
+Testing open :
+========== START test_open ==========
+Hi, this is a text file.
+syscalls testing success!
+
+========== END test_open ==========
+Testing pipe :
+========== START test_pipe ==========
+cpid: 0
+cpid: 7
+  Write to pipe successfully.
+
+========== END test_pipe ==========
+Testing read :
+========== START test_read ==========
+Hi, this is a text file.
+syscalls testing success!
+
+========== END test_read ==========
+Testing sleep :
+========== START test_sleep ==========
+sleep success.
+========== END test_sleep ==========
+Testing times :
+========== START test_times ==========
+mytimes success
+{tms_utime:0, tms_stime:0, tms_cutime:0, tms_cstime:0}
+========== END test_times ==========
+Testing umount :
+========== START test_umount ==========
+Mounting dev:/dev/vda2 to ./mnt
+mount return: 0
+umount success.
+return: 0
+========== END test_umount ==========
+Testing uname :
+========== START test_uname ==========
+Uname: A20OS AAAAAAAAAAAAAAAAAAAA 7.0.0 A20OS version 7.0.0 (Linux 6.8.0 compatible) riscv64 
+========== END test_uname ==========
+Testing unlink :
+========== START test_unlink ==========
+  unlink success!
+========== END test_unlink ==========
+Testing wait :
+========== START test_wait ==========
+This is child process
+wait child success.
+wstatus: 0
+========== END test_wait ==========
+Testing waitpid :
+========== START test_waitpid ==========
+This is child process
+waitpid successfully.
+wstatus: 3
+========== END test_waitpid ==========
+Testing write :
+========== START test_write ==========
+Hello operating system contest.
+========== END test_write ==========
+Testing yield :
+========== START test_yield ==========
+  I am child process: 7. iteration 0.
+  I am child process: 8. iteration 1.
+  I am child process: 9. iteration 2.
+  I am child process: 7. iteration 0.
+  I am child process: 8. iteration 1.
+  I am child process: 9. iteration 2.
+  I am child process: 7. iteration 0.
+  I am child process: 9. iteration 2.
+  I am child process: 8. iteration 1.
+  I am child process: 7. iteration 0.
+  I am child process: 9. iteration 2.
+  I am child process: 8. iteration 1.
+  I am child process: 7. iteration 0.
+  I am child process: 9. iteration 2.
+  I am child process: 8. iteration 1.
+========== END test_yield ==========
+#### OS COMP TEST GROUP END basic-glibc ####
+#### OS COMP TEST GROUP END basic-glibc ####
+#### OS COMP TEST GROUP START basic-musl ####
+#### OS COMP TEST GROUP START basic-musl ####
+Testing brk :
+========== START test_brk ==========
+Before alloc,heap pos: 28127232
+After alloc,heap pos: 28127296
+Alloc again,heap pos: 28127360
+========== END test_brk ==========
+Testing chdir :
+========== START test_chdir ==========
+chdir ret: 0
+  current working dir : /test/musl/basic/test_chdir
+========== END test_chdir ==========
+Testing clone :
+========== START test_clone ==========
+  Child says successfully!
+clone process successfully.
+pid:7
+========== END test_clone ==========
+Testing close :
+========== START test_close ==========
+  close 3 success.
+========== END test_close ==========
+Testing dup2 :
+========== START test_dup2 ==========
+  from fd 100
+========== END test_dup2 ==========
+Testing dup :
+========== START test_dup ==========
+  new fd is 3.
+========== END test_dup ==========
+Testing execve :
+========== START test_execve ==========
+  I am test_echo.
+execve success.
+========== END main ==========
+Testing exit :
+========== START test_exit ==========
+exit OK.
+========== END test_exit ==========
+Testing fork :
+========== START test_fork ==========
+  child process.
+  parent process. wstatus:0
+========== END test_fork ==========
+Testing fstat :
+========== START test_fstat ==========
+fstat ret: 0
+fstat: dev: 0, inode: 45, mode: 33188, nlink: 1, size: 52, atime: 1781613074, mtime: 1781613074, ctime: 1781613074
+========== END test_fstat ==========
+Testing getcwd :
+========== START test_getcwd ==========
+getcwd: /test/musl/basic successfully!
+========== END test_getcwd ==========
+Testing getdents :
+========== START test_getdents ==========
+open fd:3
+getdents fd:488
+getdents success.
+.
+
+========== END test_getdents ==========
+Testing getpid :
+========== START test_getpid ==========
+getpid success.
+pid = 6
+========== END test_getpid ==========
+Testing getppid :
+========== START test_getppid ==========
+  getppid success. ppid : 5
+========== END test_getppid ==========
+Testing gettimeofday :
+========== START test_gettimeofday ==========
+gettimeofday success.
+start:16914126, end:16914150
+interval: 24
+========== END test_gettimeofday ==========
+Testing mkdir_ :
+========== START test_mkdir ==========
+mkdir ret: -17
+  mkdir success.
+========== END test_mkdir ==========
+Testing mmap :
+========== START test_mmap ==========
+file len: 27
+mmap content:   Hello, mmap successfully!
+========== END test_mmap ==========
+Testing mount :
+========== START test_mount ==========
+Mounting dev:/dev/vda2 to ./mnt
+mount return: 0
+mount successfully
+umount return: 0
+========== END test_mount ==========
+Testing munmap :
+========== START test_munmap ==========
+file len: 27
+munmap return: 0
+munmap successfully!
+========== END test_munmap ==========
+Testing openat :
+========== START test_openat ==========
+open dir fd: 3
+openat fd: 4
+openat success.
+========== END test_openat ==========
+Testing open :
+========== START test_open ==========
+Hi, this is a text file.
+syscalls testing success!
+
+========== END test_open ==========
+Testing pipe :
+========== START test_pipe ==========
+cpid: 0
+cpid: 7
+  Write to pipe successfully.
+
+========== END test_pipe ==========
+Testing read :
+========== START test_read ==========
+Hi, this is a text file.
+syscalls testing success!
+
+========== END test_read ==========
+Testing sleep :
+========== START test_sleep ==========
+sleep success.
+========== END test_sleep ==========
+Testing times :
+========== START test_times ==========
+mytimes success
+{tms_utime:0, tms_stime:0, tms_cutime:0, tms_cstime:0}
+========== END test_times ==========
+Testing umount :
+========== START test_umount ==========
+Mounting dev:/dev/vda2 to ./mnt
+mount return: 0
+umount success.
+return: 0
+========== END test_umount ==========
+Testing uname :
+========== START test_uname ==========
+Uname: A20OS AAAAAAAAAAAAAAAAAAAA 7.0.0 A20OS version 7.0.0 (Linux 6.8.0 compatible) riscv64 
+========== END test_uname ==========
+Testing unlink :
+========== START test_unlink ==========
+  unlink success!
+========== END test_unlink ==========
+Testing wait :
+========== START test_wait ==========
+This is child process
+wait child success.
+wstatus: 0
+========== END test_wait ==========
+Testing waitpid :
+========== START test_waitpid ==========
+This is child process
+waitpid successfully.
+wstatus: 3
+========== END test_waitpid ==========
+Testing write :
+========== START test_write ==========
+Hello operating system contest.
+========== END test_write ==========
+Testing yield :
+========== START test_yield ==========
+  I am child process: 7. iteration 0.
+  I am child process: 8. iteration 1.
+  I am child process: 9. iteration 2.
+  I am child process: 7. iteration 0.
+  I am child process: 8. iteration 1.
+  I am child process: 9. iteration 2.
+  I am child process: 7. iteration 0.
+  I am child process: 9. iteration 2.
+  I am child process: 8. iteration 1.
+  I am child process: 7. iteration 0.
+  I am child process: 9. iteration 2.
+  I am child process: 8. iteration 1.
+  I am child process: 7. iteration 0.
+  I am child process: 9. iteration 2.
+  I am child process: 8. iteration 1.
+========== END test_yield ==========
+#### OS COMP TEST GROUP END basic-musl ####
+#### OS COMP TEST GROUP END basic-musl ####
+System is going down for power-off NOW.

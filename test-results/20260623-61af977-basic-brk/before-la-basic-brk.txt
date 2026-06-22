@@ -1,0 +1,182 @@
+
+======================================
+    A20OS Kernel 
+======================================
+Initializing system...
+[INIT] Trap initialized
+[INIT] UART initialized
+[INIT] Timer initialized
+[INIT] Timekeeping initialized
+[MM] Buddy+Slab: 131072 frames, 128865 free (503 MB)
+[INIT] Memory initialized
+[INIT] Random initialized
+[INIT] Boot arguments parsed
+[DRIVER] registered driver 'dw-sdio' (class=2)
+[DRIVER] registered driver 'virtio-blk' (class=2)
+[DRIVER] registered driver 'ns16550a-uart' (class=1)
+[DRIVER] registered driver 'ls2k-gmac' (class=3)
+[DRIVER] registered driver 'starfive-gmac' (class=3)
+[DRIVER] registered driver 'virtio-net' (class=3)
+[DRIVER] core initialized: 6 drivers registered
+[INIT] Driver core initialized
+[DRIVER] registered bus 'pci'
+[DRIVER] registered device 'pci-1b36:0008-0' (bus=pci)
+[DRIVER] registered device 'pci-1af4:1001-1' (bus=pci)
+[DRIVER] registered device 'pci-1af4:1000-2' (bus=pci)
+[DRIVER] registered device 'pci-1af4:1001-3' (bus=pci)
+[BUS] pci: found 4 devices (ecam=0x20000000, bus 0-127)
+[INIT] Board devices enumerated (qemu-virt-la64)
+[DRIVER] probe_all: 0 devices probed
+[INIT] Drivers probed
+[RAMFS] Initialized, root inode 0
+[INIT] VFS initialized
+[PCI] Scanning bus 0...
+[PCI] Found virtio-blk at 00:01.0
+[PCI] Found virtio-net at 00:02.0
+[PCI] Found virtio-blk at 00:03.0
+[PCI] Found 3 virtio device(s)
+[VIRTIO-NET0] ready legacy=0 mac=52:54:00:12:34:56
+[LWIP] netif en2 attached to virtio-net0 (unconfigured)
+[LWIP] initialized: IPv4 IPv6 TCP UDP RAW ICMP DHCP DNS loopif
+[NET] socket layer initialized
+[INIT] Network initialized
+[VIRTIO0] Block device ready: capacity=262144 sectors (128 MB)
+[INIT] Device 0 -> /bin (fat32)
+[VIRTIO1] Block device ready: capacity=8388608 sectors (4096 MB)
+[EXT4] Mounted: block_size=4096 groups=32 inode_size=256 inodes/group=8192
+[INIT] Device 1 -> /test (ext4)
+[VIRTIO2] Probe failed
+[INIT] Process manager initialized
+[INIT] System ready
+
+[1;36m    _    ____   ___   ___  ____  
+   / \  |___ \ / _ \ / _ \/ ___| 
+  / _ \   __) | | | | | | \___ \ 
+ / ___ \ / __/| |_| | |_| |___) |
+/_/   \_\_____|\___/ \___/|____/ 
+[0mWelcome to A20OS!
+
+[PROC] user task pid=2 entry=0x104d8 sp=0x3ffffe90
+[LIBLINK] copied /lib/ld-linux-loongarch-lp64d.so.1
+[LIBLINK] copied /lib64/ld-linux-loongarch-lp64d.so.1
+[LIBLINK] glibc loader ready from /test/glibc/lib
+[LIBLINK] copied /lib/ld-musl-loongarch-lp64d.so.1
+[LIBLINK] copied /lib64/ld-musl-loongarch-lp64d.so.1
+[LIBLINK] musl loader ready from /test/musl/lib
+#### OS COMP TEST GROUP START basic-glibc-brk ####
+Testing brk iteration 1 :
+========== START test_brk ==========
+Before alloc,heap pos: 1797795840
+After alloc,heap pos: 1797795904
+Alloc again,heap pos: 1797795968
+========== END test_brk ==========
+brk status: 0
+Testing brk iteration 2 :
+========== START test_brk ==========
+Before alloc,heap pos: -746377216
+After alloc,heap pos: -746377216
+Alloc again,heap pos: -746377216
+========== END test_brk ==========
+brk status: 0
+Testing brk iteration 3 :
+========== START test_brk ==========
+Before alloc,heap pos: 1772761088
+After alloc,heap pos: 1772761152
+Alloc again,heap pos: 1772761216
+========== END test_brk ==========
+brk status: 0
+Testing brk iteration 4 :
+========== START test_brk ==========
+Before alloc,heap pos: 1441476608
+After alloc,heap pos: 1441476672
+Alloc again,heap pos: 1441476736
+========== END test_brk ==========
+brk status: 0
+Testing brk iteration 5 :
+========== START test_brk ==========
+Before alloc,heap pos: 208941056
+After alloc,heap pos: 208941120
+Alloc again,heap pos: 208941184
+========== END test_brk ==========
+brk status: 0
+Testing brk iteration 6 :
+========== START test_brk ==========
+Before alloc,heap pos: 868364288
+After alloc,heap pos: 868364352
+Alloc again,heap pos: 868364416
+========== END test_brk ==========
+brk status: 0
+Testing brk iteration 7 :
+========== START test_brk ==========
+Before alloc,heap pos: 1615409152
+After alloc,heap pos: 1615409216
+Alloc again,heap pos: 1615409280
+========== END test_brk ==========
+brk status: 0
+Testing brk iteration 8 :
+========== START test_brk ==========
+Before alloc,heap pos: 79376384
+After alloc,heap pos: 79376448
+Alloc again,heap pos: 79376512
+========== END test_brk ==========
+brk status: 0
+#### OS COMP TEST GROUP END basic-glibc-brk ####
+#### OS COMP TEST GROUP START basic-musl-brk ####
+Testing brk iteration 1 :
+========== START test_brk ==========
+Before alloc,heap pos: 1923952640
+After alloc,heap pos: 1923952704
+Alloc again,heap pos: 1923952768
+========== END test_brk ==========
+brk status: 0
+Testing brk iteration 2 :
+========== START test_brk ==========
+Before alloc,heap pos: -2053492736
+After alloc,heap pos: -2053492736
+Alloc again,heap pos: -2053492736
+========== END test_brk ==========
+brk status: 0
+Testing brk iteration 3 :
+========== START test_brk ==========
+Before alloc,heap pos: -268488704
+After alloc,heap pos: -268488704
+Alloc again,heap pos: -268488704
+========== END test_brk ==========
+brk status: 0
+Testing brk iteration 4 :
+========== START test_brk ==========
+Before alloc,heap pos: 771043328
+After alloc,heap pos: 771043392
+Alloc again,heap pos: 771043456
+========== END test_brk ==========
+brk status: 0
+Testing brk iteration 5 :
+========== START test_brk ==========
+Before alloc,heap pos: -140365824
+After alloc,heap pos: -140365824
+Alloc again,heap pos: -140365824
+========== END test_brk ==========
+brk status: 0
+Testing brk iteration 6 :
+========== START test_brk ==========
+Before alloc,heap pos: -2058473472
+After alloc,heap pos: -2058473472
+Alloc again,heap pos: -2058473472
+========== END test_brk ==========
+brk status: 0
+Testing brk iteration 7 :
+========== START test_brk ==========
+Before alloc,heap pos: 1347694592
+After alloc,heap pos: 1347694656
+Alloc again,heap pos: 1347694720
+========== END test_brk ==========
+brk status: 0
+Testing brk iteration 8 :
+========== START test_brk ==========
+Before alloc,heap pos: 387198976
+After alloc,heap pos: 387199040
+Alloc again,heap pos: 387199104
+========== END test_brk ==========
+brk status: 0
+#### OS COMP TEST GROUP END basic-musl-brk ####
+System is going down for power-off NOW.
