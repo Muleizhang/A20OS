@@ -14,7 +14,7 @@
 
 ## 当前基线
 
-- 当前本地 HEAD：当前提交 `fix basic brk aslr`；精确 hash 以 `git rev-parse --short HEAD` 为准。
+- 当前本地 HEAD：`c1a5e07 fix basic brk aslr`。
 - 最新可用线上 Accepted 结果：`5027702d`，来自 `/home/muleizh/Downloads/new.html`。
   - 提交时间：`2026-06-22 14:08:01`。
   - 评测时间：`2026-06-22 14:34:28.724232+08:00` 到 `2026-06-22 16:03:44.400848+08:00`。
@@ -29,6 +29,17 @@
 - 旧真实评测 `860e5c28f3342dab37a1335ff530565e52fdb648` 只作为历史对照：旧总分 `1461.9608684241714`，当时 LTP 为 0，且 iozone/lmbench 已证明四组入口能跑完。
 - 最新本地 LTP bounded after：`test-results/20260622-3d92ae9-ltp-window32/after-serial-rv-glibc-ltp-window32.txt`，本地 RV/glibc bounded subset 为 `643 / 2840`，after 全部 rc 0。
 - 但 `5027702d` 线上 RV/glibc LTP bounded subset 没有干净完成：只拿 `13` 分，串口显示 `[CONTEST][FAIL] ltp bounded_subset_failed cases=44`。
+- 当前 HEAD `c1a5e07` 已本地专项复核 `5027702d` 的 LTP ENOSPC 主簇：
+  - 日志目录 `test-results/20260623-c1a5e07-ltp-enospc/`。
+  - fresh 运行 40 个线上 ENOSPC file/xattr/path case：`failed_cases=0`。
+  - `iozone` glibc+musl 前缀后运行同一 40-case 簇：`failed_cases=0`。
+  - `iozone` glibc+musl 前缀后运行完整当前 RV/glibc bounded subset：QEMU status 0，`[CONTEST][PASS] ltp bounded_subset_completed`，`[ENOSPC][bounded][SUMMARY] executed=1 failed=0 rc=0`，扫描无 `FAIL LTP CASE`、`TFAIL`、`TBROK`、`TIMEOUT`、`ENOSPC`、`[CONTEST][FAIL]`。
+  - 结论：当前 HEAD 本地未复现 `5027702d` 旧线上 LTP bounded 失败；下一步优先做当前 HEAD 线上验证，而不是继续本地盲修或扩窗。
+- 当前提交包构建预检：
+  - 日志目录 `test-results/20260623-c1a5e07-submit-package/`。
+  - 初始 `git archive` 干净包构建失败：`user/external/musl/configure` 在 zip 中无可执行位，`make all` 直接执行 `../configure` 得到 `Permission denied`。
+  - 已将 `user/Makefile` 的 musl rebuild 改为 `sh ../configure`，避免依赖 zip/上传工具保留 Unix executable bit。
+  - 临时工作树源码包 `oskernel2025-a20-c1a5e07-worktree-submit.zip` 解压后 `make all` 通过，日志 `build-make-all-from-worktree-zip.txt` 尾部包含 `=== Competition build complete ===`，并生成 `kernel-rv`、`kernel-la`、`disk.img`、`disk-la.img`。
 
 ## 评测入口约束
 
@@ -71,7 +82,7 @@
   - `epoll_pwait03`、`pth_str02`、`asapi_03`、`shm_test`、`clock_nanosleep01`、`leapsec01`、`mmap3` 继续 quarantine。
   - `shm_test` 曾在 window29 probe 触发 `proc_next_task_locked` 链表损坏、`KERNEL PAGE FAULT`/`KERNEL PANIC`，不要在常规扩窗中重新运行。
   - 只加入 probe 与 after 都确认稳定、返回 rc 0、没有内部 `TFAIL/TBROK`、没有 host timeout 的 case。
-- 在 `5027702d` 线上 bounded LTP 失败被解释并修好前，不继续常规 LTP 扩窗。
+- 在当前 HEAD 线上确认 bounded LTP 干净通过前，不继续常规 LTP 扩窗；`c1a5e07` 本地已无法复现 `5027702d` 的旧 ENOSPC/timeout/timing 失败。
 
 ## 当前提分路线表
 
@@ -83,7 +94,7 @@
 | 1 | busybox | `214 / 216`，best sane `218` | 低 | `busybox kill 10` 四组均 `0/1`；musl `hwclock` RV/LA 均失败，串口为 `RTC_RD_TIME: Not a tty`。 | 每轮只修一个小簇：先 `kill 10`，再 musl `hwclock`；分别定位 signal/kill 语义和 RTC ioctl/tty 兼容。 | 先跑对应 busybox 单项，再跑 busybox 四组；确认不影响 basic/lua；需要产物时再 `make all`。 | 本地完成：`busybox kill 10` 已由 commit `d649244` 修复，日志 `test-results/20260623-5377443-busybox-kill10`；`busybox hwclock` 已由 commit `0531c5d` 修复，日志 `test-results/20260623-d649244-busybox-hwclock`；RV/LA x glibc/musl 官方 busybox 脚本追加 hidden `kill 10` 均输出 `testcase busybox hwclock success` 和 `testcase busybox kill 10 success`，`make all` 通过并生成四个产物；等待下一次线上验证。 |
 | 2 | basic | 线上 `352 / 408`；本地 `mount/umount`、`pipe`、`brk` 已修，待线上验证 | 低-中 | 原线上 `mount/umount` 四组全 0；`pipe` 在 LA glibc 和 musl 两架构缺；`brk` 在 RV glibc、LA musl 部分缺。已定位并修复 `mount/umount` 的 `sys_umount2` 相对路径未规范化、VFS unmount root double-free、`/dev/vda2` 兼容映射问题；已定位并修复 `pipe` 的父子进程 tty 输出行串扰；已定位并修复 `brk` 因 ET_DYN ASLR 超出固定低地址用户布局而随机让 libc malloc 避开 sbrk 的问题。 | `mount/umount`、`pipe`、`brk` 三簇本地均已完成。下一轮不再继续 basic 小簇，除非线上验证仍暴露新 basic 缺口。 | 后续只做线上验证或 basic 回归保护；若线上 basic 仍缺分，再根据 detail score 重新分簇。 | 本地完成待线上验证：`mount/umount` 已由提交 `fix basic mount umount` 修复，日志 `test-results/20260623-0531c5d-basic-mount`；`pipe` 已由提交 `fix basic pipe output` 修复，日志 `test-results/20260623-fbfffc5-basic-pipe`；`brk` 已由本轮提交 `fix basic brk aslr` 修复，日志 `test-results/20260623-61af977-basic-brk`。brk before 循环随机失败：RV/glibc 3/8、RV/musl 6/8、LA/glibc 7/8、LA/musl 4/8；after 四组均 8/8 增长。RV/LA 官方 basic 脚本中 glibc/musl 四个 `test_brk` 均增长，`mount/umount` 仍通过，`pipe` 无 `cpid:` 串扰；busybox echo/printf/true 与 lua 四组 smoke 通过；`make all` 通过并生成四个产物。 |
 | 3 | libctest-musl | `434 / 434`，best sane `447` | 中 | 对旧榜首无差距；明细中 musl `crypt` 动/静态、`pleval` 静态为 0；glibc libctest 继续 skip。 | basic/busybox 完成后再考虑；先单项提取失败原因，不碰 glibc libctest 入口。 | musl libctest 单项；确认项目仍 completed。 | 暂缓。 |
-| 4 | LTP 线上 bounded 修复 | `13 / 122100`，sane best `288000` | 中 | 线上 RV/glibc bounded 失败 44 个 case；大量 file metadata/xattr/path case 报 `ENOSPC`，另有 `clock_gettime04` timing、`select04` timeout、`futex_cmp_requeue01` ETIMEDOUT；musl/LA LTP 仍 skip。 | 先禁止扩窗；复现并定位线上 ENOSPC/磁盘污染来源，再按小簇处理 timing/select/futex。 | 本地复现失败簇；跑完整 RV/glibc bounded after，必须出现 `[CONTEST][PASS] ltp bounded_subset_completed`；再 `make all`。 | 待处理。 |
+| 4 | LTP 线上 bounded 修复 | `13 / 122100`，sane best `288000` | 中 | `5027702d` 线上 RV/glibc bounded 失败 44 个 case；大量 file metadata/xattr/path case 报 `ENOSPC`，另有 `clock_gettime04` timing、`select04` timeout、`futex_cmp_requeue01` ETIMEDOUT；musl/LA LTP 仍 skip。当前 HEAD `c1a5e07` 本地未复现这些失败。 | 先禁止扩窗；如果当前 HEAD 线上仍失败，再按最新线上日志分簇复现；如果线上通过，再恢复 bounded 扩窗。 | 本地已跑 fresh ENOSPC 簇、`iozone` 前缀 ENOSPC 簇、`iozone` 前缀完整 RV/glibc bounded subset；线上仍需用当前 HEAD 验证。 | 已尝试-本地未复现：日志 `test-results/20260623-c1a5e07-ltp-enospc`。fresh 40-case ENOSPC 簇 PASS；`iozone` glibc+musl 前缀后 40-case ENOSPC 簇 PASS；`iozone` glibc+musl 前缀后完整 RV/glibc bounded subset PASS，QEMU status 0，`bounded_subset_completed`，无 FAIL/TFAIL/TBROK/TIMEOUT/ENOSPC。建议下一步提交当前 HEAD 做线上验证；线上通过后再进入顺序 5 扩窗，线上失败则以新日志重新分簇。 |
 | 5 | LTP bounded 扩窗 | 本地 `643 / 2840` case | 中 | 只有在线上 bounded 修复后才继续。 | 先整理 pending 全量、过滤理由、最终 probe 列表；不要边挑边测；不要一次性运行全部 pending。 | probe 只筛 strict clean case；after 完整 bounded PASS；`make all`；更新 `test-results.csv` 和本表完成记录。 | 阻塞于顺序 4。 |
 | 6 | cyclictest | `9.4849 / 31.9919` | 中-高 | LA 两组 skip；RV 通过但分低，日志有 `WARN: High resolution timers not available` 和 hackbench 压力噪声。 | 默认只研究 RV timer/调度小修；LA 仍 skip，除非用户指定。 | RV cyclictest glibc/musl 单项；确认入口 completed 不退化。 | 暂缓。 |
 | 7 | iperf/netperf | `45.2961 / 87.9826` 合计 | 高 | 四组都 PASS 但吞吐/延迟低；glibc netperf UDP_STREAM 打印 `enable_enobufs failed: getprotobyname`。 | 先修低风险 libc/network database 兼容，再看 TCP/UDP copy、wakeup、timer 性能。 | iperf/netperf 四组单项，对比分数和串口输出。 | 暂缓。 |
@@ -143,7 +154,7 @@
   - LA/musl：2820。
 - 原始四组 LTP 单项都会卡在 `RUN LTP CASE cgroup_fj_proc`。
 - 最新已验证本地窗口：`test-results/20260622-3d92ae9-ltp-window32`。
-- window25-window32 已扩至本地 `643` 个 RV/glibc bounded case，但线上 `5027702d` 证明当前 bounded 列表在真实评测环境仍会失败，先修失败再扩窗。
+- window25-window32 已扩至本地 `643` 个 RV/glibc bounded case；线上 `5027702d` 曾显示 bounded 列表失败，但当前 HEAD `c1a5e07` 本地专项复核无法复现，先做当前 HEAD 线上确认再扩窗。
 - 后续常规扩窗继续排除 window25-window32 rejected 类别：rsh 依赖 network、hugetlb/NUMA/keyctl/mq/pid-user namespace、shell wrapper/helper、execve 内部 TFAIL、pidfd/sysctl、DIO/dirtyc0w/mmap stress、float abort、ioctl/ioprio/kcmp、dirtypipe、dma_thread_diotest、usage/参数依赖 helper、fs_racer timeout/SIGSEGV/FATAL 等，除非专门做对应问题簇复核。
 
 ## 线上评测和文档更新规则
