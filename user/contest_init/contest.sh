@@ -17,6 +17,7 @@ export LTP_TMPDIR=/tmp
 export TMPDIR=/tmp
 export HOME=/root
 export LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}/bin/lib:/lib"
+export PATH="/tmp:$PATH"
 mkdir -p /root
 
 
@@ -26,6 +27,18 @@ chmod 755 /bin/zcat
 print '#!/bin/mksh' > /bin/gunzip
 print 'exec /busybox gunzip "$@"' >> /bin/gunzip
 chmod 755 /bin/gunzip
+print '#!/bin/mksh' > /tmp/systemd-detect-virt
+print 'typeset -i quiet=0 container=0' >> /tmp/systemd-detect-virt
+print 'for arg in "$@"; do' >> /tmp/systemd-detect-virt
+print '    case "$arg" in' >> /tmp/systemd-detect-virt
+print '        --quiet|-q) quiet=1 ;;' >> /tmp/systemd-detect-virt
+print '        --container|-c) container=1 ;;' >> /tmp/systemd-detect-virt
+print '    esac' >> /tmp/systemd-detect-virt
+print 'done' >> /tmp/systemd-detect-virt
+print '(( container )) && exit 1' >> /tmp/systemd-detect-virt
+print '(( quiet )) || print qemu' >> /tmp/systemd-detect-virt
+print 'exit 0' >> /tmp/systemd-detect-virt
+chmod 755 /tmp/systemd-detect-virt
 
 sync
 
