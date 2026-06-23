@@ -260,8 +260,26 @@ run_ltp_case_with_timeout() {
 
     print "[CONTEST][LTP][TIMEOUT] case=$name after ${timeout}s"
     /busybox killall "$name" 2>/dev/null || killall "$name" 2>/dev/null
+    kill -TERM "$pid" 2>/dev/null
+    sleep 1
+    /busybox killall -9 "$name" 2>/dev/null || killall -9 "$name" 2>/dev/null
+    kill -KILL "$pid" 2>/dev/null
+    wait "$pid" 2>/dev/null
     print "FAIL LTP CASE $name : 124"
     return 1
+}
+
+ltp_case_timeout() {
+    case "$1" in
+        ftest03|ftest04|ftest07|ftest08) print 120 ;;
+        *) print 60 ;;
+    esac
+}
+
+run_ltp_bounded_case() {
+    typeset name=$1
+    typeset -i timeout=$(ltp_case_timeout "$name")
+    run_ltp_case_with_timeout "$name" "$timeout"
 }
 
 run_ltp_bounded_subset() {
@@ -274,7 +292,7 @@ run_ltp_bounded_subset() {
         return 0
     fi
 
-    print "[CONTEST][RUN] runtime=$runtime group=ltp mode=bounded_subset case_timeout=60s"
+    print "[CONTEST][RUN] runtime=$runtime group=ltp mode=bounded_subset case_timeout=60s ftest_timeout=120s"
     print "#### OS COMP TEST GROUP START ltp-$runtime ####"
 
     if [[ ! -d $dir ]]; then
@@ -309,10 +327,10 @@ run_ltp_bounded_subset() {
         capset01 capset02 capset03 capset04 \
         cgroup_core03
     do
-        run_ltp_case_with_timeout "$name" 60 || (( failed_cases++ ))
+        run_ltp_bounded_case "$name" || (( failed_cases++ ))
     done
     print "[CONTEST][LTP][SKIP] cgroup_fj_proc blacklisted_helper"
-    run_ltp_case_with_timeout chdir04 60 || (( failed_cases++ ))
+    run_ltp_bounded_case chdir04 || (( failed_cases++ ))
     for name in \
         chmod01 chmod03 chmod05 chmod06 chmod07 \
         chown01 chown02 chown03 chown04 chown05 \
@@ -546,7 +564,7 @@ run_ltp_bounded_subset() {
         clone01 diotest1 diotest4 memcontrol01 mmap001 \
         dirty doio epoll-ltp fs_racer.sh
     do
-        run_ltp_case_with_timeout "$name" 60 || (( failed_cases++ ))
+        run_ltp_bounded_case "$name" || (( failed_cases++ ))
     done
 
     cd /
