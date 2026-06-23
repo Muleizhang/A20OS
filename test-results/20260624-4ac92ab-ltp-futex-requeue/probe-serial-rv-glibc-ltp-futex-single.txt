@@ -1,0 +1,171 @@
+[HOST] START rv glibc ltp-futex base 2026-06-24T01:03:57+08:00
+
+OpenSBI v1.7
+   ____                    _____ ____ _____
+  / __ \                  / ____|  _ \_   _|
+ | |  | |_ __   ___ _ __ | (___ | |_) || |
+ | |  | | '_ \ / _ \ '_ \ \___ \|  _ < | |
+ | |__| | |_) |  __/ | | |____) | |_) || |_
+  \____/| .__/ \___|_| |_|_____/|____/_____|
+        | |
+        |_|
+
+Platform Name               : riscv-virtio,qemu
+Platform Features           : medeleg
+Platform HART Count         : 1
+Platform IPI Device         : aclint-mswi
+Platform Timer Device       : aclint-mtimer @ 10000000Hz
+Platform Console Device     : uart8250
+Platform HSM Device         : ---
+Platform PMU Device         : ---
+Platform Reboot Device      : syscon-reboot
+Platform Shutdown Device    : syscon-poweroff
+Platform Suspend Device     : ---
+Platform CPPC Device        : ---
+Firmware Base               : 0x80000000
+Firmware Size               : 317 KB
+Firmware RW Offset          : 0x40000
+Firmware RW Size            : 61 KB
+Firmware Heap Offset        : 0x46000
+Firmware Heap Size          : 37 KB (total), 2 KB (reserved), 11 KB (used), 23 KB (free)
+Firmware Scratch Size       : 4096 B (total), 1400 B (used), 2696 B (free)
+Runtime SBI Version         : 3.0
+Standard SBI Extensions     : time,rfnc,ipi,base,hsm,srst,pmu,dbcn,fwft,legacy,dbtr,sse
+Experimental SBI Extensions : none
+
+Domain0 Name                : root
+Domain0 Boot HART           : 0
+Domain0 HARTs               : 0*
+Domain0 Region00            : 0x0000000000100000-0x0000000000100fff M: (I,R,W) S/U: (R,W)
+Domain0 Region01            : 0x0000000010000000-0x0000000010000fff M: (I,R,W) S/U: (R,W)
+Domain0 Region02            : 0x0000000002000000-0x000000000200ffff M: (I,R,W) S/U: ()
+Domain0 Region03            : 0x0000000080040000-0x000000008004ffff M: (R,W) S/U: ()
+Domain0 Region04            : 0x0000000080000000-0x000000008003ffff M: (R,X) S/U: ()
+Domain0 Region05            : 0x000000000c400000-0x000000000c5fffff M: (I,R,W) S/U: (R,W)
+Domain0 Region06            : 0x000000000c000000-0x000000000c3fffff M: (I,R,W) S/U: (R,W)
+Domain0 Region07            : 0x0000000000000000-0xffffffffffffffff M: () S/U: (R,W,X)
+Domain0 Next Address        : 0x0000000080200000
+Domain0 Next Arg1           : 0x00000000bfe00000
+Domain0 Next Mode           : S-mode
+Domain0 SysReset            : yes
+Domain0 SysSuspend          : yes
+
+Boot HART ID                : 0
+Boot HART Domain            : root
+Boot HART Priv Version      : v1.12
+Boot HART Base ISA          : rv64imafdch
+Boot HART ISA Extensions    : sstc,zicntr,zihpm,zicboz,zicbom,sdtrig,svadu
+Boot HART PMP Count         : 16
+Boot HART PMP Granularity   : 2 bits
+Boot HART PMP Address Bits  : 54
+Boot HART MHPM Info         : 16 (0x0007fff8)
+Boot HART Debug Triggers    : 2 triggers
+Boot HART MIDELEG           : 0x0000000000001666
+Boot HART MEDELEG           : 0x0000000000f4b509
+
+======================================
+    A20OS Kernel 
+======================================
+Initializing system...
+[INIT] Trap initialized
+[INIT] UART initialized
+[INIT] Timer initialized
+[INIT] Timekeeping initialized
+[MM] Buddy+Slab: 262144 frames, 259152 free (1012 MB)
+[INIT] Memory initialized
+[INIT] Random initialized
+[FDT] dtb_ptr=0xbfe00000
+[FDT] no bootargs extracted
+[INIT] Boot arguments parsed
+[DRIVER] registered driver 'dw-sdio' (class=2)
+[DRIVER] registered driver 'virtio-blk' (class=2)
+[DRIVER] registered driver 'ns16550a-uart' (class=1)
+[DRIVER] registered driver 'ls2k-gmac' (class=3)
+[DRIVER] registered driver 'starfive-gmac' (class=3)
+[DRIVER] registered driver 'virtio-net' (class=3)
+[DRIVER] core initialized: 6 drivers registered
+[INIT] Driver core initialized
+[DRIVER] registered bus 'virtio-mmio'
+[DRIVER] registered device 'virtio-blk0' (bus=virtio-mmio)
+[DRIVER] registered device 'virtio-blk1' (bus=virtio-mmio)
+[BUS] virtio-mmio: found 2 devices (base=0xffffffc010001000 irq_base=1)
+[INIT] Board devices enumerated (qemu-virt-rv64)
+[DRIVER] probe_all: 0 devices probed
+[INIT] Drivers probed
+[RAMFS] Initialized, root inode 0
+[INIT] VFS initialized
+[LWIP] initialized: IPv4 IPv6 TCP UDP RAW ICMP DHCP DNS loopif
+[NET] socket layer initialized
+[INIT] Network initialized
+[VIRTIO0] Block device ready: capacity=262144 sectors (128 MB)
+[INIT] Device 0 -> /bin (fat32)
+[VIRTIO1] Block device ready: capacity=8388608 sectors (4096 MB)
+[EXT4] Mounted: block_size=4096 groups=32 inode_size=256 inodes/group=8192
+[INIT] Device 1 -> /test (ext4)
+[VIRTIO2] Probe failed
+[INIT] Process manager initialized
+[INIT] System ready
+
+[1;36m    _    ____   ___   ___  ____  
+   / \  |___ \ / _ \ / _ \/ ___| 
+  / _ \   __) | | | | | | \___ \ 
+ / ___ \ / __/| |_| | |_| |___) |
+/_/   \_\_____|\___/ \___/|____/ 
+[0mWelcome to A20OS!
+
+[PROC] user task pid=2 entry=0x10440 sp=0x3ffffe90
+[LIBLINK] copied /lib/ld-linux-riscv64-lp64d.so.1
+[LIBLINK] copied /lib64/ld-linux-riscv64-lp64d.so.1
+[LIBLINK] glibc loader ready from /test/glibc/lib
+[LIBLINK] copied /lib/ld-musl-riscv64.so.1
+[LIBLINK] copied /lib64/ld-musl-riscv64.so.1
+[LIBLINK] musl loader ready from /test/musl/lib
+[LTP-FUTEX] syntax_check=/bin/contest-under-test.sh
+[LTP-FUTEX][PASS] syntax
+[LTP-FUTEX][base] running futex residual
+#### OS COMP TEST GROUP START ltp-glibc ####
+RUN LTP CASE futex_cmp_requeue01
+tst_test.c:1733: [1;34mTINFO: [0mLTP version: 20240524
+tst_test.c:1617: [1;34mTINFO: [0mTimeout per run is 0h 00m 30s
+futex_cmp_requeue01.c:194: [1;34mTINFO: [0mTesting variant: syscall with old kernel spec
+futex_cmp_requeue01.c:103: [1;34mTINFO: [0mTest 0: waiters: 10, wakes: 3, requeues: 7
+futex_cmp_requeue01.c:126: [1;34mTINFO: [0mfutex_cmp_requeue() returned 10
+futex_cmp_requeue01.c:140: [1;34mTINFO: [0mchildren woken, futex0: 0, futex1: 7, spurious wakeups: 0
+futex_cmp_requeue01.c:187: [1;32mTPASS: [0mfutex_cmp_requeue()
+futex_cmp_requeue01.c:103: [1;34mTINFO: [0mTest 1: waiters: 10, wakes: 0, requeues: 10
+futex_cmp_requeue01.c:126: [1;34mTINFO: [0mfutex_cmp_requeue() returned 10
+futex_cmp_requeue01.c:140: [1;34mTINFO: [0mchildren woken, futex0: 0, futex1: 10, spurious wakeups: 0
+futex_cmp_requeue01.c:187: [1;32mTPASS: [0mfutex_cmp_requeue()
+futex_cmp_requeue01.c:103: [1;34mTINFO: [0mTest 2: waiters: 10, wakes: 2, requeues: 6
+futex_cmp_requeue01.c:126: [1;34mTINFO: [0mfutex_cmp_requeue() returned 8
+futex_cmp_requeue01.c:140: [1;34mTINFO: [0mchildren woken, futex0: 2, futex1: 6, spurious wakeups: 0
+futex_cmp_requeue01.c:187: [1;32mTPASS: [0mfutex_cmp_requeue()
+futex_cmp_requeue01.c:103: [1;34mTINFO: [0mTest 3: waiters: 100, wakes: 50, requeues: 50
+futex_cmp_requeue01.c:126: [1;34mTINFO: [0mfutex_cmp_requeue() returned 100
+futex_cmp_requeue01.c:140: [1;34mTINFO: [0mchildren woken, futex0: 0, futex1: 50, spurious wakeups: 0
+futex_cmp_requeue01.c:187: [1;32mTPASS: [0mfutex_cmp_requeue()
+futex_cmp_requeue01.c:103: [1;34mTINFO: [0mTest 4: waiters: 100, wakes: 0, requeues: 70
+futex_cmp_requeue01.c:126: [1;34mTINFO: [0mfutex_cmp_requeue() returned 70
+futex_cmp_requeue01.c:140: [1;34mTINFO: [0mchildren woken, futex0: 30, futex1: 70, spurious wakeups: 0
+futex_cmp_requeue01.c:187: [1;32mTPASS: [0mfutex_cmp_requeue()
+futex_cmp_requeue01.c:103: [1;34mTINFO: [0mTest 5: waiters: 1000, wakes: 100, requeues: 900
+futex_cmp_requeue01.c:126: [1;34mTINFO: [0mfutex_cmp_requeue() returned 1000
+futex_cmp_requeue01.c:140: [1;34mTINFO: [0mchildren woken, futex0: 0, futex1: 900, spurious wakeups: 0
+futex_cmp_requeue01.c:187: [1;32mTPASS: [0mfutex_cmp_requeue()
+futex_cmp_requeue01.c:103: [1;34mTINFO: [0mTest 6: waiters: 1000, wakes: 300, requeues: 500
+futex_cmp_requeue01.c:126: [1;34mTINFO: [0mfutex_cmp_requeue() returned 800
+futex_cmp_requeue01.c:140: [1;34mTINFO: [0mchildren woken, futex0: 200, futex1: 500, spurious wakeups: 0
+futex_cmp_requeue01.c:187: [1;32mTPASS: [0mfutex_cmp_requeue()
+
+Summary:
+passed   7
+failed   0
+broken   0
+skipped  0
+warnings 0
+END LTP CASE futex_cmp_requeue01 : 0
+[LTP-FUTEX][base][SUMMARY] pass=1 fail=0
+#### OS COMP TEST GROUP END ltp-glibc ####
+[CONTEST][PASS] ltp-futex-base
+System is going down for power-off NOW.
+[HOST] END rv glibc ltp-futex base status=0 2026-06-24T01:04:17+08:00

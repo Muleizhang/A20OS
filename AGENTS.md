@@ -14,7 +14,7 @@
 
 ## 当前基线
 
-- 当前本地 HEAD：本文件所在提交，提交主题为 `fix ltp virtual timing detection`；精确 hash 用 `git log -1 --oneline` 确认。
+- 当前本地 HEAD：本文件所在提交，提交主题为 `guard ltp futex cmp requeue timeout`；精确 hash 用 `git log -1 --oneline` 确认。
 - 最新可用线上 Accepted 结果：`c28c3aad`，来自 `/home/muleizh/Downloads/c28c3aad.html`、`/home/muleizh/Downloads/Riscv-c28c3aad.txt`、`/home/muleizh/Downloads/LoongArch-c28c3aad.txt`。
   - 提交时间：`2026-06-23 18:46:02`。
   - 评测时间：`2026-06-23 18:50:54.756042+08:00` 到 `2026-06-23 20:20:34.798228+08:00`。
@@ -29,11 +29,11 @@
   - `real-results/c28c3aad-online/ltp-detail-c28c3aad.csv`
   - `real-results/c28c3aad-online/ltp-failures-c28c3aad.csv`
 - 旧真实评测 `860e5c28f3342dab37a1335ff530565e52fdb648` 只作为历史对照：旧总分 `1461.9608684241714`，当时 LTP 为 0，且 iozone/lmbench 已证明四组入口能跑完。
-- 最新本地 LTP bounded after：`test-results/20260623-c28c3aa-ltp-ftest-timeout/after-serial-rv-glibc-ltp-window32.txt`，本地 RV/glibc bounded subset 为 `643 / 2840`，after 全部 rc 0。
+- 最新本地 LTP bounded after：`test-results/20260624-4ac92ab-ltp-futex-requeue/after-serial-rv-glibc-ltp-bounded-futex-timeout.txt`，本地 RV/glibc bounded subset 为 `643 / 2840`，after QEMU status 0，`bounded_subset_completed`。
 - `c28c3aad` 线上 RV/glibc LTP bounded subset 仍没有干净完成：拿 `39` 分，串口显示 `[CONTEST][FAIL] ltp bounded_subset_failed cases=6`。
   - 已确认线上清零：`4afeeee` 的 39 个 `ENOSPC` file metadata/xattr/path 主簇，以及 `ftest03`、`ftest04`、`ftest07`、`ftest08` wrapper timeout。
   - 线上剩余 5 个 timing/latency：`clock_gettime04`、`epoll_wait02`、`nanosleep01`、`poll02`、`select02`；当前本地已由 `/tmp/systemd-detect-virt` shim 修复并验证，待下一次线上确认。
-  - 剩余 1 个 futex timeout：`futex_cmp_requeue01`；线上日志显示 LTP 内部 `Test timeouted, sending SIGKILL!` / `TBROK: Test killed! (timeout?)`，不是 contest wrapper 的 60s timeout。
+  - 剩余 1 个 futex timeout：`futex_cmp_requeue01`；线上日志显示 LTP 内部 `Test timeouted, sending SIGKILL!` / `TBROK: Test killed! (timeout?)`，不是 contest wrapper 的 60s timeout；当前本地已通过 futex 专用 timeout guard 修复并验证，待下一次线上确认。
 - `4afeeee` 线上 RV/glibc LTP bounded subset 历史失败：拿 `30` 分，串口显示 `[CONTEST][FAIL] ltp bounded_subset_failed cases=49`。
   - 39 个主簇为 file metadata/xattr/path `ENOSPC`：`access01`、`access02`、`access04`、`bind01`、`chmod01`、`chmod03`、`chmod06`、`chown02`、`chown04`、`chown05`、`chroot03`、`faccessat201`、`faccessat202`、`fchownat01`、`fchownat02`、`link02`、`setresgid04`、`setresuid05`、`setuid04`、`symlink04`、`unlink05`、`unlink07`、`utime07`、`rename09`、`renameat201`、`renameat202`、`fgetxattr03`、`lgetxattr01`、`lgetxattr02`、`listxattr01`、`listxattr02`、`listxattr03`、`llistxattr01`、`llistxattr02`、`llistxattr03`、`lstat01`、`lstat01_64`、`removexattr01`、`removexattr02`。
   - 4 个 ftest timeout：`ftest03`、`ftest04`、`ftest07`、`ftest08`。
@@ -75,6 +75,12 @@
   - 修复：`contest.sh` 将 `/tmp` 加入 `PATH`，并在 `/tmp/systemd-detect-virt` 创建 mksh shim；普通调用输出 `qemu` 并返回 0，`--quiet` 返回 0，`--container` 返回 1。最初尝试写 `/bin/systemd-detect-virt` 在 guest 内因 `ENOSPC` 失败，未保留。
   - 验证：`build-make-all-after-virt-detect-tmp.txt` 通过，尾部包含 `=== Competition build complete ===`；focused timing probe `probe-serial-rv-glibc-ltp-residual6-base.txt` 中 `clock_gettime04`、`epoll_wait02`、`nanosleep01`、`poll02`、`select02` 全部 PASS，`[LTP-RESIDUAL6][base][SUMMARY] pass=5 fail=0`，日志出现 `Running in a virtual machine, multiply the delta by 10.` 和 `Virtualisation detected, skipping oversleep checks`。
   - 完整 RV/glibc bounded after `after-serial-rv-glibc-ltp-bounded-timeout-mul.txt` QEMU status 0；5 个 timing case 在完整顺序中均通过；严格扫描剩余失败仅 `futex_cmp_requeue01`，最终 `[CONTEST][FAIL] ltp bounded_subset_failed cases=1` / `[CONTEST][FAIL] ltp-bounded-after-timeout-mul`。下一轮只处理 futex residual。
+- 本轮 futex timeout guard：
+  - 日志目录 `test-results/20260624-4ac92ab-ltp-futex-requeue/`。
+  - 线上依据：`c28c3aad` 串口中 `futex_cmp_requeue01` 先通过 Test 0-4，随后大量 waiter 报 `ETIMEDOUT`，最后 LTP 自身打印 `Test timeouted, sending SIGKILL!` / `TBROK: Test killed! (timeout?)`，说明是 LTP 内部高 waiter 阶段超时，不是 contest wrapper 60s timeout。
+  - 修复：仅对 RV/glibc bounded 中的 `futex_cmp_requeue01` 设置 180s wrapper timeout，并在该 case 运行期间导出 `LTP_TIMEOUT_MUL=4`，运行后恢复原环境；不改变其他 LTP case、musl/LA LTP skip 或 bounded 列表。
+  - 验证：单项 after `probe-serial-rv-glibc-ltp-futex-single-after.txt` QEMU status 0，`futex_cmp_requeue01` 显示 `Timeout per run is 0h 02m 00s`，Test 5/6 TPASS，`END LTP CASE futex_cmp_requeue01 : 0`，`[CONTEST][PASS] ltp-futex-base`；完整 RV/glibc bounded after `after-serial-rv-glibc-ltp-bounded-futex-timeout.txt` QEMU status 0，`[CONTEST][PASS] ltp bounded_subset_completed` 和 `[CONTEST][PASS] ltp-bounded-after-futex-timeout`；严格扫描无 `FAIL LTP CASE`、`TFAIL`、`TBROK`、`TIMEOUT`、`ENOSPC`、`[CONTEST][FAIL]`、kernel panic/page fault、`proc_next_task_locked`、`assert`、`FATAL`。
+  - `make all` 已通过，`build-make-all-after-futex-timeout.txt` 尾部包含 `=== Competition build complete ===` 并生成 `kernel-rv`、`kernel-la`、`disk.img`、`disk-la.img`。
 - `c7d2d62` 本地附加验证：
   - `c7d2d62 guard ltp ftest timeouts` 是 timing 修复前的本地 HEAD。
   - 日志目录 `test-results/20260623-c7d2d62-ltp-online49-recheck/`：直接运行 `4afeeee` 线上失败的 49 个 RV/glibc LTP case，QEMU status 0，`[LTP-ONLINE49][probe][SUMMARY] pass=49 fail=0`，扫描无 `FAIL LTP CASE`、`TFAIL`、`TBROK`、`TIMEOUT`、`ENOSPC`、`[CONTEST][FAIL]`、kernel panic/page fault。
@@ -132,7 +138,7 @@
   - `epoll_pwait03`、`pth_str02`、`asapi_03`、`shm_test`、`clock_nanosleep01`、`leapsec01`、`mmap3` 继续 quarantine。
   - `shm_test` 曾在 window29 probe 触发 `proc_next_task_locked` 链表损坏、`KERNEL PAGE FAULT`/`KERNEL PANIC`，不要在常规扩窗中重新运行。
   - 只加入 probe 与 after 都确认稳定、返回 rc 0、没有内部 `TFAIL/TBROK`、没有 host timeout 的 case。
-- 在 `c28c3aad` residual 没有清零前，不继续常规 LTP 扩窗；当前 timing/latency 簇已本地修复并等待线上确认，下一轮优先处理唯一剩余的 `futex_cmp_requeue01` internal timeout。
+- 在 `c28c3aad` residual 没有经线上确认清零前，不继续常规 LTP 扩窗；当前 timing/latency 簇和 `futex_cmp_requeue01` internal timeout 均已本地修复并等待线上确认。
 
 ## 当前提分路线表
 
@@ -144,8 +150,8 @@
 | 1 | busybox | `216 / 216` | 已完成 | 旧缺口 `kill 10` 和 musl `hwclock` 已在 4afeeee 线上清零。 | 不再作为主线。 | 只做回归保护。 | 已完成：`busybox kill 10` 由 commit `d649244` 修复，日志 `test-results/20260623-5377443-busybox-kill10`；`busybox hwclock` 由 commit `0531c5d` 修复，日志 `test-results/20260623-d649244-busybox-hwclock`；`4afeeee` 线上四组均 `54/54`。 |
 | 2 | basic | `408 / 408` | 已完成 | 旧缺口 `mount/umount`、`pipe`、`brk` 已在 4afeeee 线上清零。 | 不再作为主线。 | 只做回归保护。 | 已完成：`mount/umount` 日志 `test-results/20260623-0531c5d-basic-mount`；`pipe` 日志 `test-results/20260623-fbfffc5-basic-pipe`；`brk` 日志 `test-results/20260623-61af977-basic-brk`；`4afeeee` 线上四组均 `102/102`。 |
 | 3 | libctest-musl | `434 / 434`，best sane `447` | 中 | 对旧榜首无差距；明细中 musl `crypt` 动/静态、`pleval` 静态为 0；glibc libctest 继续 skip。 | basic/busybox 完成后再考虑；先单项提取失败原因，不碰 glibc libctest 入口。 | musl libctest 单项；确认项目仍 completed。 | 暂缓。 |
-| 4 | LTP 线上 bounded 修复 | `39 / 122100`，sane best `288000` | 中 | `c28c3aad` 线上 RV/glibc bounded 失败 6 个 case；5 个 timing/latency 已本地修复待线上确认：`clock_gettime04`、`epoll_wait02`、`nanosleep01`、`poll02`、`select02`；1 个 futex internal timeout 仍待修：`futex_cmp_requeue01`。`4afeeee` 的 39 个 ENOSPC 主簇和 4 个 ftest wrapper timeout 已线上清零；musl/LA LTP 仍 skip。 | 每轮只修一个簇。已修 ENOSPC 主簇：释放 VFS time metadata table 中被 unlink/rmdir/rename-overwrite 删除 vnode 占用的记录。已加 ftest timeout guard：`ftest03/04/07/08` 使用 120s timeout 并强化超时清理。已修 timing/latency 簇：增加 `/tmp/systemd-detect-virt` shim 让 LTP 使用虚拟化阈值。下一轮只处理 `futex_cmp_requeue01`。 | futex 最小 probe；有收益后跑完整 RV/glibc bounded after；扫描关键失败词；`make all`；线上复测确认 residual 是否减少到 0。 | 部分完成-待线上确认 timing：VFS time metadata 修复 commit `c28c3aa fix vfs time metadata recycling`，日志 `test-results/20260623-4afeeee-ltp-time-meta/`，`c28c3aad` 线上确认 39 个 ENOSPC 主簇清零；ftest timeout guard commit `c7d2d62 guard ltp ftest timeouts`，日志 `test-results/20260623-c28c3aa-ltp-ftest-timeout/`，`c28c3aad` 线上确认 `ftest03/04/07/08` 清零。timing/latency 修复 commit 为本文件所在提交 `fix ltp virtual timing detection`，日志 `test-results/20260623-c7d2d62-ltp-timing-latency/`，focused timing probe 5/5 PASS，完整 bounded after 中 5 个 timing case 均 PASS，剩余唯一失败为 `futex_cmp_requeue01`，`make all` PASS。下一步：修 futex residual 并线上确认。 |
-| 5 | LTP bounded 扩窗 | 本地 `643 / 2840` case | 中 | 只有在线上确认 residual 不再导致 bounded fail 后才继续。 | 先整理 pending 全量、过滤理由、最终 probe 列表；不要边挑边测；不要一次性运行全部 pending。 | probe 只筛 strict clean case；after 完整 bounded PASS；`make all`；更新 `test-results.csv` 和本表完成记录。 | 阻塞于顺序 4 的 futex residual 修复。 |
+| 4 | LTP 线上 bounded 修复 | `39 / 122100`，sane best `288000` | 中 | `c28c3aad` 线上 RV/glibc bounded 失败 6 个 case；5 个 timing/latency 已本地修复待线上确认：`clock_gettime04`、`epoll_wait02`、`nanosleep01`、`poll02`、`select02`；1 个 futex internal timeout 已本地修复待线上确认：`futex_cmp_requeue01`。`4afeeee` 的 39 个 ENOSPC 主簇和 4 个 ftest wrapper timeout 已线上清零；musl/LA LTP 仍 skip。 | 每轮只修一个簇。已修 ENOSPC 主簇：释放 VFS time metadata table 中被 unlink/rmdir/rename-overwrite 删除 vnode 占用的记录。已加 ftest timeout guard：`ftest03/04/07/08` 使用 120s timeout 并强化超时清理。已修 timing/latency 簇：增加 `/tmp/systemd-detect-virt` shim 让 LTP 使用虚拟化阈值。已修 futex internal timeout：仅对 `futex_cmp_requeue01` 设置 180s wrapper timeout 和 `LTP_TIMEOUT_MUL=4`，运行后恢复环境。 | 完整 RV/glibc bounded after；扫描关键失败词；`make all`；线上复测确认 residual 是否减少到 0。 | 部分完成-待线上确认 timing/futex：VFS time metadata 修复 commit `c28c3aa fix vfs time metadata recycling`，日志 `test-results/20260623-4afeeee-ltp-time-meta/`，`c28c3aad` 线上确认 39 个 ENOSPC 主簇清零；ftest timeout guard commit `c7d2d62 guard ltp ftest timeouts`，日志 `test-results/20260623-c28c3aa-ltp-ftest-timeout/`，`c28c3aad` 线上确认 `ftest03/04/07/08` 清零。timing/latency 修复 commit `4ac92ab fix ltp virtual timing detection`，日志 `test-results/20260623-c7d2d62-ltp-timing-latency/`，focused timing probe 5/5 PASS，完整 bounded after 中 5 个 timing case 均 PASS。futex timeout guard 为本文件所在提交，日志 `test-results/20260624-4ac92ab-ltp-futex-requeue/`，单项 futex after PASS，完整 643-case RV/glibc bounded after QEMU status 0，`bounded_subset_completed` 和 `ltp-bounded-after-futex-timeout` PASS，严格扫描无失败关键词，`make all` PASS。下一步：线上确认 residual6 是否清零；确认前不继续扩窗。 |
+| 5 | LTP bounded 扩窗 | 本地 `643 / 2840` case | 中 | 只有在线上确认 residual 不再导致 bounded fail 后才继续。 | 先整理 pending 全量、过滤理由、最终 probe 列表；不要边挑边测；不要一次性运行全部 pending。 | probe 只筛 strict clean case；after 完整 bounded PASS；`make all`；更新 `test-results.csv` 和本表完成记录。 | 阻塞于顺序 4 的线上确认。 |
 | 6 | cyclictest | `9.4849 / 31.9919` | 中-高 | LA 两组 skip；RV 通过但分低，日志有 `WARN: High resolution timers not available` 和 hackbench 压力噪声。 | 默认只研究 RV timer/调度小修；LA 仍 skip，除非用户指定。 | RV cyclictest glibc/musl 单项；确认入口 completed 不退化。 | 暂缓。 |
 | 7 | iperf/netperf | `45.2961 / 87.9826` 合计 | 高 | 四组都 PASS 但吞吐/延迟低；glibc netperf UDP_STREAM 打印 `enable_enobufs failed: getprotobyname`。 | 先修低风险 libc/network database 兼容，再看 TCP/UDP copy、wakeup、timer 性能。 | iperf/netperf 四组单项，对比分数和串口输出。 | 暂缓。 |
 | 8 | iozone | `80 / 159.9971` | 高 | 四组都 PASS，但每组 `20/40`，明细每个吞吐项只有基础分。 | 存储/page-cache/virtio block 性能专题；不改入口顺序和 timeout。 | iozone 四组单项，确认 completed 且吞吐改善。 | 暂缓。 |
@@ -175,7 +181,7 @@
 2. 优先按失败原因分簇：
    - 已完成并线上确认：ENOSPC/file metadata/xattr/path 39 个 case；ftest wrapper timeout 4 个 case。
    - 已本地修复待线上确认：timing/latency `clock_gettime04`、`epoll_wait02`、`nanosleep01`、`poll02`、`select02`。
-   - 当前下一簇：futex internal timeout `futex_cmp_requeue01`。
+   - 已本地修复待线上确认：futex internal timeout `futex_cmp_requeue01`。
 3. 每轮只选一个簇，先单项复现，再修内核或入口问题；不要把 timing 和 futex 混在同一轮修。
 4. 阶段 1 当前完成标准：`c28c3aad` residual6 全部清零或明确记录剩余原因。完整 RV/glibc bounded after 必须干净通过，无 `FAIL LTP CASE`、`TFAIL`、`TBROK`、`TIMEOUT`、`[CONTEST][FAIL]`、kernel panic/page fault。
 
@@ -202,8 +208,8 @@
   - LA/glibc：2840。
   - LA/musl：2820。
 - 原始四组 LTP 单项都会卡在 `RUN LTP CASE cgroup_fj_proc`。
-- 最新已验证本地窗口：`test-results/20260623-c28c3aa-ltp-ftest-timeout/after-serial-rv-glibc-ltp-window32.txt`；VFS time metadata 修复后复跑完整 after 的复制日志为 `test-results/20260623-4afeeee-ltp-time-meta/after-serial-rv-glibc-ltp-time-meta.txt`。
-- window25-window32 已扩至本地 `643` 个 RV/glibc bounded case；线上 `c28c3aad` 显示 bounded 列表失败 6 个 case，其中 `4afeeee` 的 39 个 ENOSPC 主簇和 `ftest03/04/07/08` timeout 已线上确认修复；timing/latency 5 case 已本地修复待线上确认；继续扩窗前必须先处理或明确记录 `futex_cmp_requeue01` residual。
+- 最新已验证本地窗口：`test-results/20260624-4ac92ab-ltp-futex-requeue/after-serial-rv-glibc-ltp-bounded-futex-timeout.txt`；VFS time metadata 修复后复跑完整 after 的复制日志为 `test-results/20260623-4afeeee-ltp-time-meta/after-serial-rv-glibc-ltp-time-meta.txt`；ftest guard 后完整 after 为 `test-results/20260623-c28c3aa-ltp-ftest-timeout/after-serial-rv-glibc-ltp-window32.txt`。
+- window25-window32 已扩至本地 `643` 个 RV/glibc bounded case；线上 `c28c3aad` 显示 bounded 列表失败 6 个 case，其中 `4afeeee` 的 39 个 ENOSPC 主簇和 `ftest03/04/07/08` timeout 已线上确认修复；timing/latency 5 case 与 `futex_cmp_requeue01` 已本地修复待线上确认；继续扩窗前必须先等待线上确认或明确记录残留原因。
 - 后续常规扩窗继续排除 window25-window32 rejected 类别：rsh 依赖 network、hugetlb/NUMA/keyctl/mq/pid-user namespace、shell wrapper/helper、execve 内部 TFAIL、pidfd/sysctl、DIO/dirtyc0w/mmap stress、float abort、ioctl/ioprio/kcmp、dirtypipe、dma_thread_diotest、usage/参数依赖 helper、fs_racer timeout/SIGSEGV/FATAL 等，除非专门做对应问题簇复核。
 
 ## 线上评测和文档更新规则
