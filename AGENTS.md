@@ -14,7 +14,8 @@
 
 ## 当前基线
 
-- 当前本地 HEAD：本文件所在提交，提交主题为 `fix vfs time metadata recycling`；精确 hash 用 `git log -1 --oneline` 确认。
+- 当前本地 HEAD：本文件所在提交，提交主题为 `guard ltp ftest timeouts`；精确 hash 用 `git log -1 --oneline` 确认。
+- `c28c3aa fix vfs time metadata recycling` 已由用户发起线上评测；在结果返回前，不假设线上 ENOSPC/timing/timeout 已清零。
 - 最新可用线上 Accepted 结果：`4afeeee`，来自 `/home/muleizh/Downloads/new2.html`、`/home/muleizh/Downloads/Riscv输出 (1).txt`、`/home/muleizh/Downloads/LoongArch输出 (1).txt`。
   - 提交时间：`2026-06-23 14:05:56`。
   - 评测时间：`2026-06-23 14:06:20.652882+08:00` 到 `2026-06-23 15:42:45.773047+08:00`。
@@ -28,7 +29,7 @@
   - `real-results/4afeeee-online/shortcomings-4afeeee.csv`
   - `real-results/4afeeee-online/ltp-failures-4afeeee.csv`
 - 旧真实评测 `860e5c28f3342dab37a1335ff530565e52fdb648` 只作为历史对照：旧总分 `1461.9608684241714`，当时 LTP 为 0，且 iozone/lmbench 已证明四组入口能跑完。
-- 最新本地 LTP bounded after：`test-results/20260622-3d92ae9-ltp-window32/after-serial-rv-glibc-ltp-window32.txt`，本地 RV/glibc bounded subset 为 `643 / 2840`，after 全部 rc 0。
+- 最新本地 LTP bounded after：`test-results/20260623-c28c3aa-ltp-ftest-timeout/after-serial-rv-glibc-ltp-window32.txt`，本地 RV/glibc bounded subset 为 `643 / 2840`，after 全部 rc 0。
 - `4afeeee` 线上 RV/glibc LTP bounded subset 仍没有干净完成：拿 `30` 分，串口显示 `[CONTEST][FAIL] ltp bounded_subset_failed cases=49`。
   - 39 个主簇为 file metadata/xattr/path `ENOSPC`：`access01`、`access02`、`access04`、`bind01`、`chmod01`、`chmod03`、`chmod06`、`chown02`、`chown04`、`chown05`、`chroot03`、`faccessat201`、`faccessat202`、`fchownat01`、`fchownat02`、`link02`、`setresgid04`、`setresuid05`、`setuid04`、`symlink04`、`unlink05`、`unlink07`、`utime07`、`rename09`、`renameat201`、`renameat202`、`fgetxattr03`、`lgetxattr01`、`lgetxattr02`、`listxattr01`、`listxattr02`、`listxattr03`、`llistxattr01`、`llistxattr02`、`llistxattr03`、`lstat01`、`lstat01_64`、`removexattr01`、`removexattr02`。
   - 4 个 ftest timeout：`ftest03`、`ftest04`、`ftest07`、`ftest08`。
@@ -52,6 +53,12 @@
   - 验证：复用 window32 完整 RV/glibc bounded after，`after-serial-rv-glibc-ltp-time-meta.txt` QEMU status 0，`[CONTEST][PASS] ltp bounded_subset_completed`，`[CONTEST][PASS] ltp-window32-after`；扫描无 `FAIL LTP CASE`、`TFAIL`、`TBROK`、`TIMEOUT`、`ENOSPC`、`[CONTEST][FAIL]`、kernel panic/page fault；线上 49 个失败 case 在本地 after 顺序中均通过。
   - `make all` 已通过，`build-make-all-after-time-meta.txt` 尾部包含 `=== Competition build complete ===` 并生成 `kernel-rv`、`kernel-la`、`disk.img`、`disk-la.img`。
   - ext4 9000 文件 create/write/delete 压力复现脚本尝试过慢，手动终止，不能作为通过证据。
+- 本轮 ftest timeout guard：
+  - 日志目录 `test-results/20260623-c28c3aa-ltp-ftest-timeout/`。
+  - 线上依据：`4afeeee` 串口中 `ftest03/04/07/08` 在 60s wrapper timeout 后仍出现迟到 `TPASS`，说明线上慢路径接近超时并可能留下跨 case 输出污染。
+  - 修复：RV/glibc bounded LTP 中 `ftest03`、`ftest04`、`ftest07`、`ftest08` 使用 120s case timeout；timeout 分支增加 `TERM`、等待、`KILL`、`wait` 清理，避免超时进程继续向后续 case 写输出。
+  - 验证：targeted probe 中 `ftest03/04/07/08` 全部 rc 0；完整 RV/glibc bounded after `after-serial-rv-glibc-ltp-window32.txt` QEMU status 0，`[CONTEST][PASS] ltp bounded_subset_completed`，`[CONTEST][PASS] ltp-window32-after`；扫描无 `FAIL LTP CASE`、`TFAIL`、`TBROK`、`TIMEOUT`、`ENOSPC`、`[CONTEST][FAIL]`、kernel panic/page fault；`ftest03/04/07/08`、`futex_cmp_requeue01`、`clock_gettime04`、`clock_nanosleep02`、`select02`、`pselect01`、`pselect01_64` 在完整 after 中均通过。
+  - `make all` 已通过，`build-make-all-after-ftest-timeout.txt` 尾部包含 `=== Competition build complete ===` 并生成 `kernel-rv`、`kernel-la`、`disk.img`、`disk-la.img`。
 - 当前提交包构建预检：
   - 日志目录 `test-results/20260623-c1a5e07-submit-package/`。
   - 初始 `git archive` 干净包构建失败：`user/external/musl/configure` 在 zip 中无可执行位，`make all` 直接执行 `../configure` 得到 `Permission denied`。
@@ -103,7 +110,7 @@
   - `epoll_pwait03`、`pth_str02`、`asapi_03`、`shm_test`、`clock_nanosleep01`、`leapsec01`、`mmap3` 继续 quarantine。
   - `shm_test` 曾在 window29 probe 触发 `proc_next_task_locked` 链表损坏、`KERNEL PAGE FAULT`/`KERNEL PANIC`，不要在常规扩窗中重新运行。
   - 只加入 probe 与 after 都确认稳定、返回 rc 0、没有内部 `TFAIL/TBROK`、没有 host timeout 的 case。
-- 在 VFS time metadata 修复经线上确认前，不继续常规 LTP 扩窗；当前先解决 `4afeeee` RV/glibc bounded LTP 49 个线上失败中的 `ENOSPC` 主簇，再单独处理残留 timing/timeout/futex 簇。
+- 在 VFS time metadata 修复经线上确认前，不继续常规 LTP 扩窗；当前先解决 `4afeeee` RV/glibc bounded LTP 49 个线上失败中的 `ENOSPC` 主簇，并已本地增加 ftest timeout guard。下一步优先读取 c28c3aa 线上结果，再决定是否继续处理残留 timing/timeout/futex 簇。
 
 ## 当前提分路线表
 
@@ -115,7 +122,7 @@
 | 1 | busybox | `216 / 216` | 已完成 | 旧缺口 `kill 10` 和 musl `hwclock` 已在 4afeeee 线上清零。 | 不再作为主线。 | 只做回归保护。 | 已完成：`busybox kill 10` 由 commit `d649244` 修复，日志 `test-results/20260623-5377443-busybox-kill10`；`busybox hwclock` 由 commit `0531c5d` 修复，日志 `test-results/20260623-d649244-busybox-hwclock`；`4afeeee` 线上四组均 `54/54`。 |
 | 2 | basic | `408 / 408` | 已完成 | 旧缺口 `mount/umount`、`pipe`、`brk` 已在 4afeeee 线上清零。 | 不再作为主线。 | 只做回归保护。 | 已完成：`mount/umount` 日志 `test-results/20260623-0531c5d-basic-mount`；`pipe` 日志 `test-results/20260623-fbfffc5-basic-pipe`；`brk` 日志 `test-results/20260623-61af977-basic-brk`；`4afeeee` 线上四组均 `102/102`。 |
 | 3 | libctest-musl | `434 / 434`，best sane `447` | 中 | 对旧榜首无差距；明细中 musl `crypt` 动/静态、`pleval` 静态为 0；glibc libctest 继续 skip。 | basic/busybox 完成后再考虑；先单项提取失败原因，不碰 glibc libctest 入口。 | musl libctest 单项；确认项目仍 completed。 | 暂缓。 |
-| 4 | LTP 线上 bounded 修复 | `30 / 122100`，sane best `288000` | 中 | `4afeeee` 线上 RV/glibc bounded 失败 49 个 case；39 个 file metadata/xattr/path case 报 `ENOSPC`，另有 `clock_gettime04`、`clock_nanosleep02`、`select02`、`pselect01`、`pselect01_64` timing/latency，`ftest03/04/07/08` timeout，`futex_cmp_requeue01` timeout；musl/LA LTP 仍 skip。 | 每轮只修一个簇。当前已修 ENOSPC 主簇：释放 VFS time metadata table 中被 unlink/rmdir/rename-overwrite 删除 vnode 占用的记录。下一轮若线上仍失败，再单独处理 timing/timeout/futex。 | 完整 RV/glibc bounded after；扫描关键失败词；`make all`；线上复测确认 ENOSPC 是否清零。 | 部分完成-待线上验证：本轮 VFS time metadata 修复已在提交 `fix vfs time metadata recycling` 中完成，日志 `test-results/20260623-4afeeee-ltp-time-meta/`；完整 window32 after QEMU status 0，`bounded_subset_completed` 和 `ltp-window32-after` PASS，扫描无 FAIL/TFAIL/TBROK/TIMEOUT/ENOSPC/kernel panic；`make all` PASS。线上 49 个失败 case 本地 after 均通过，但只有 39 个 ENOSPC 有明确代码根因，timing/ftest/futex 线上残留需下一轮按新线上结果判断。 |
+| 4 | LTP 线上 bounded 修复 | `30 / 122100`，sane best `288000` | 中 | `4afeeee` 线上 RV/glibc bounded 失败 49 个 case；39 个 file metadata/xattr/path case 报 `ENOSPC`，另有 `clock_gettime04`、`clock_nanosleep02`、`select02`、`pselect01`、`pselect01_64` timing/latency，`ftest03/04/07/08` timeout，`futex_cmp_requeue01` timeout；musl/LA LTP 仍 skip。 | 每轮只修一个簇。已修 ENOSPC 主簇：释放 VFS time metadata table 中被 unlink/rmdir/rename-overwrite 删除 vnode 占用的记录。已加 ftest timeout guard：`ftest03/04/07/08` 使用 120s timeout 并强化超时清理。下一轮必须先读 c28c3aa 线上结果，再判断 timing/timeout/futex 是否仍需单独处理。 | 完整 RV/glibc bounded after；扫描关键失败词；`make all`；线上复测确认 ENOSPC、ftest timeout 和残留 timing/futex 是否清零。 | 部分完成-待线上验证：VFS time metadata 修复已在提交 `c28c3aa fix vfs time metadata recycling` 中完成，日志 `test-results/20260623-4afeeee-ltp-time-meta/`；ftest timeout guard 已在本文件所在提交完成，日志 `test-results/20260623-c28c3aa-ltp-ftest-timeout/`。完整 window32 after QEMU status 0，`bounded_subset_completed` 和 `ltp-window32-after` PASS，扫描无 FAIL/TFAIL/TBROK/TIMEOUT/ENOSPC/kernel panic；`make all` PASS。线上 49 个失败 case 本地 after 均通过；线上结论等待 c28c3aa 结果。 |
 | 5 | LTP bounded 扩窗 | 本地 `643 / 2840` case | 中 | 只有在线上确认 ENOSPC 主簇清零且 bounded 不被现有 case 卡死后才继续。 | 先整理 pending 全量、过滤理由、最终 probe 列表；不要边挑边测；不要一次性运行全部 pending。 | probe 只筛 strict clean case；after 完整 bounded PASS；`make all`；更新 `test-results.csv` 和本表完成记录。 | 阻塞于顺序 4 的线上确认。 |
 | 6 | cyclictest | `9.4849 / 31.9919` | 中-高 | LA 两组 skip；RV 通过但分低，日志有 `WARN: High resolution timers not available` 和 hackbench 压力噪声。 | 默认只研究 RV timer/调度小修；LA 仍 skip，除非用户指定。 | RV cyclictest glibc/musl 单项；确认入口 completed 不退化。 | 暂缓。 |
 | 7 | iperf/netperf | `45.2961 / 87.9826` 合计 | 高 | 四组都 PASS 但吞吐/延迟低；glibc netperf UDP_STREAM 打印 `enable_enobufs failed: getprotobyname`。 | 先修低风险 libc/network database 兼容，再看 TCP/UDP copy、wakeup、timer 性能。 | iperf/netperf 四组单项，对比分数和串口输出。 | 暂缓。 |
@@ -149,7 +156,7 @@
    - ftest timeout：`ftest03`、`ftest04`、`ftest07`、`ftest08`。
    - futex timeout：`futex_cmp_requeue01`。
 3. 每轮只选一个簇，先单项复现，再修内核或入口污染问题；不要把 ENOSPC、timing、ftest、futex 混在同一轮修。
-4. 阶段 1 当前完成标准：VFS time metadata 修复经线上确认后，`ENOSPC` 主簇清零；如果仍有 timing/timeout/futex 失败，再继续按单簇处理。完整 RV/glibc bounded after 必须干净通过，无 `FAIL LTP CASE`、`TFAIL`、`TBROK`、`TIMEOUT`、`[CONTEST][FAIL]`、kernel panic/page fault。
+4. 阶段 1 当前完成标准：VFS time metadata 修复经线上确认后，`ENOSPC` 主簇清零；ftest timeout guard 经线上确认后，`ftest03/04/07/08` 不再超时且无跨 case 残留输出；如果仍有 timing/timeout/futex 失败，再继续按单簇处理。完整 RV/glibc bounded after 必须干净通过，无 `FAIL LTP CASE`、`TFAIL`、`TBROK`、`TIMEOUT`、`[CONTEST][FAIL]`、kernel panic/page fault。
 
 ### 阶段 2：继续 bounded 扩窗
 
@@ -174,8 +181,8 @@
   - LA/glibc：2840。
   - LA/musl：2820。
 - 原始四组 LTP 单项都会卡在 `RUN LTP CASE cgroup_fj_proc`。
-- 最新已验证本地窗口：`test-results/20260622-3d92ae9-ltp-window32`；本轮 VFS time metadata 修复后复跑完整 after 的复制日志为 `test-results/20260623-4afeeee-ltp-time-meta/after-serial-rv-glibc-ltp-time-meta.txt`。
-- window25-window32 已扩至本地 `643` 个 RV/glibc bounded case；线上 `4afeeee` 显示 bounded 列表失败 49 个 case，其中 39 个 ENOSPC 主簇已本地定位并修复，等待线上确认后再继续扩窗。
+- 最新已验证本地窗口：`test-results/20260623-c28c3aa-ltp-ftest-timeout/after-serial-rv-glibc-ltp-window32.txt`；VFS time metadata 修复后复跑完整 after 的复制日志为 `test-results/20260623-4afeeee-ltp-time-meta/after-serial-rv-glibc-ltp-time-meta.txt`。
+- window25-window32 已扩至本地 `643` 个 RV/glibc bounded case；线上 `4afeeee` 显示 bounded 列表失败 49 个 case，其中 39 个 ENOSPC 主簇已本地定位并修复，`ftest03/04/07/08` timeout guard 已本地验证，等待线上确认后再继续扩窗。
 - 后续常规扩窗继续排除 window25-window32 rejected 类别：rsh 依赖 network、hugetlb/NUMA/keyctl/mq/pid-user namespace、shell wrapper/helper、execve 内部 TFAIL、pidfd/sysctl、DIO/dirtyc0w/mmap stress、float abort、ioctl/ioprio/kcmp、dirtypipe、dma_thread_diotest、usage/参数依赖 helper、fs_racer timeout/SIGSEGV/FATAL 等，除非专门做对应问题簇复核。
 
 ## 线上评测和文档更新规则
