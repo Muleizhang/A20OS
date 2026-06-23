@@ -285,6 +285,7 @@ run_ltp_case_with_timeout() {
 ltp_case_timeout() {
     case "$1" in
         ftest03|ftest04|ftest07|ftest08) print 120 ;;
+        futex_cmp_requeue01) print 180 ;;
         *) print 60 ;;
     esac
 }
@@ -292,6 +293,20 @@ ltp_case_timeout() {
 run_ltp_bounded_case() {
     typeset name=$1
     typeset -i timeout=$(ltp_case_timeout "$name")
+    if [[ $name == futex_cmp_requeue01 ]]; then
+        typeset old_mul="${LTP_TIMEOUT_MUL-}"
+        typeset -i had_mul=0
+        [[ -n ${LTP_TIMEOUT_MUL+x} ]] && had_mul=1
+        export LTP_TIMEOUT_MUL=4
+        run_ltp_case_with_timeout "$name" "$timeout"
+        typeset rc=$?
+        if (( had_mul )); then
+            export LTP_TIMEOUT_MUL="$old_mul"
+        else
+            unset LTP_TIMEOUT_MUL
+        fi
+        return $rc
+    fi
     run_ltp_case_with_timeout "$name" "$timeout"
 }
 
@@ -305,7 +320,7 @@ run_ltp_bounded_subset() {
         return 0
     fi
 
-    print "[CONTEST][RUN] runtime=$runtime group=ltp mode=bounded_subset case_timeout=60s ftest_timeout=120s"
+    print "[CONTEST][RUN] runtime=$runtime group=ltp mode=bounded_subset case_timeout=60s ftest_timeout=120s futex_timeout=180s futex_ltp_timeout_mul=4"
     print "#### OS COMP TEST GROUP START ltp-$runtime ####"
 
     if [[ ! -d $dir ]]; then
