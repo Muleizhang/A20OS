@@ -1,0 +1,16 @@
+make ARCH=riscv64 ABI=both BRINGUP=1 kernel-only
+make ARCH=loongarch64 ABI=both BRINGUP=1 kernel-only
+make ARCH=aarch64 ABI=both BRINGUP=1 kernel-only
+make ARCH=x86_64 ABI=both BRINGUP=1 kernel-only
+make[1]: Entering directory '/home/fq/project/oskernel2025-a20'
+make[1]: Entering directory '/home/fq/project/oskernel2025-a20'
+make[1]: Entering directory '/home/fq/project/oskernel2025-a20'
+make[1]: Entering directory '/home/fq/project/oskernel2025-a20'
+Kernel-only build complete: .kernel-build/aarch64-both-bringup/kernel.bin
+Kernel-only build complete: .kernel-build/loongarch64-both-bringup/kernel.bin
+make[1]: Leaving directory '/home/fq/project/oskernel2025-a20'
+make[1]: Leaving directory '/home/fq/project/oskernel2025-a20'
+Kernel-only build complete: .kernel-build/riscv64-both-bringup/kernel.bin
+make[1]: Leaving directory '/home/fq/project/oskernel2025-a20'
+Kernel-only build complete: .kernel-build/x86_64-both-bringup/kernel.bin
+make[1]: Leaving directory '/home/fq/project/oskernel2025-a20'

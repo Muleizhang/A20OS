@@ -1,0 +1,811 @@
+
+OpenSBI v1.6
+   ____                    _____ ____ _____
+  / __ \                  / ____|  _ \_   _|
+ | |  | |_ __   ___ _ __ | (___ | |_) || |
+ | |  | | '_ \ / _ \ '_ \ \___ \|  _ < | |
+ | |__| | |_) |  __/ | | |____) | |_) || |_
+  \____/| .__/ \___|_| |_|_____/|____/_____|
+        | |
+        |_|
+
+Platform Name               : riscv-virtio,qemu
+Platform Features           : medeleg
+Platform HART Count         : 1
+Platform IPI Device         : aclint-mswi
+Platform Timer Device       : aclint-mtimer @ 10000000Hz
+Platform Console Device     : uart8250
+Platform HSM Device         : ---
+Platform PMU Device         : ---
+Platform Reboot Device      : syscon-reboot
+Platform Shutdown Device    : syscon-poweroff
+Platform Suspend Device     : ---
+Platform CPPC Device        : ---
+Firmware Base               : 0x80000000
+Firmware Size               : 325 KB
+Firmware RW Offset          : 0x40000
+Firmware RW Size            : 69 KB
+Firmware Heap Offset        : 0x48000
+Firmware Heap Size          : 37 KB (total), 2 KB (reserved), 13 KB (used), 21 KB (free)
+Firmware Scratch Size       : 4096 B (total), 440 B (used), 3656 B (free)
+Runtime SBI Version         : 2.0
+Standard SBI Extensions     : ipi,pmu,srst,hsm,rfnc,time,base,legacy,dbcn
+Experimental SBI Extensions : sse,fwft,dbtr
+
+Domain0 Name                : root
+Domain0 Boot HART           : 0
+Domain0 HARTs               : 0*
+Domain0 Region00            : 0x0000000000100000-0x0000000000100fff M: (I,R,W) S/U: (R,W)
+Domain0 Region01            : 0x0000000010000000-0x0000000010000fff M: (I,R,W) S/U: (R,W)
+Domain0 Region02            : 0x0000000002000000-0x000000000200ffff M: (I,R,W) S/U: ()
+Domain0 Region03            : 0x0000000080040000-0x000000008005ffff M: (R,W) S/U: ()
+Domain0 Region04            : 0x0000000080000000-0x000000008003ffff M: (R,X) S/U: ()
+Domain0 Region05            : 0x000000000c400000-0x000000000c5fffff M: (I,R,W) S/U: (R,W)
+Domain0 Region06            : 0x000000000c000000-0x000000000c3fffff M: (I,R,W) S/U: (R,W)
+Domain0 Region07            : 0x0000000000000000-0xffffffffffffffff M: () S/U: (R,W,X)
+Domain0 Next Address        : 0x0000000080200000
+Domain0 Next Arg1           : 0x00000000bfe00000
+Domain0 Next Mode           : S-mode
+Domain0 SysReset            : yes
+Domain0 SysSuspend          : yes
+
+Boot HART ID                : 0
+Boot HART Domain            : root
+Boot HART Priv Version      : v1.12
+Boot HART Base ISA          : rv64imafdch
+Boot HART ISA Extensions    : sstc,zicntr,zihpm,zicboz,zicbom,sdtrig,svadu
+Boot HART PMP Count         : 16
+Boot HART PMP Granularity   : 2 bits
+Boot HART PMP Address Bits  : 54
+Boot HART MHPM Info         : 16 (0x0007fff8)
+Boot HART Debug Triggers    : 2 triggers
+Boot HART MIDELEG           : 0x0000000000001666
+Boot HART MEDELEG           : 0x0000000000f4b509
+
+======================================
+    A20OS Kernel 
+======================================
+Initializing system...
+[INIT] Trap initialized
+[INIT] UART initialized
+[INIT] Timer initialized
+[INIT] Timekeeping initialized
+[MM] Buddy+Slab: 262144 frames, 259155 free (1012 MB)
+[INIT] Memory initialized
+[INIT] Random initialized
+[FDT] dtb_ptr=0xbfe00000
+[FDT] no bootargs extracted
+[INIT] Boot arguments parsed
+[DRIVER] registered driver 'dw-sdio' (class=2)
+[DRIVER] registered driver 'virtio-blk' (class=2)
+[DRIVER] registered driver 'ns16550a-uart' (class=1)
+[DRIVER] registered driver 'ls2k-gmac' (class=3)
+[DRIVER] registered driver 'starfive-gmac' (class=3)
+[DRIVER] registered driver 'virtio-net' (class=3)
+[DRIVER] core initialized: 6 drivers registered
+[INIT] Driver core initialized
+[DRIVER] registered bus 'virtio-mmio'
+[DRIVER] registered device 'virtio-blk0' (bus=virtio-mmio)
+[DRIVER] registered device 'virtio-blk1' (bus=virtio-mmio)
+[DRIVER] registered device 'virtio-net4' (bus=virtio-mmio)
+[BUS] virtio-mmio: found 3 devices (base=0xffffffc010001000 irq_base=1)
+[INIT] Board devices enumerated (qemu-virt-rv64)
+[DRIVER] probe_all: 0 devices probed
+[INIT] Drivers probed
+[RAMFS] Initialized, root inode 0
+[INIT] VFS initialized
+[VIRTIO-NET0] ready legacy=0 mac=52:54:00:12:34:56
+[LWIP] netif en2 attached to virtio-net0 (unconfigured)
+[LWIP] initialized: IPv4 IPv6 TCP UDP RAW ICMP DHCP DNS loopif
+[NET] socket layer initialized
+[INIT] Network initialized
+[VIRTIO0] Block device ready: capacity=262144 sectors (128 MB)
+[INIT] Device 0 -> /bin (fat32)
+[VIRTIO1] Block device ready: capacity=8388608 sectors (4096 MB)
+[EXT4] Mounted: block_size=4096 groups=32 inode_size=256 inodes/group=8192
+[INIT] Device 1 -> /test (ext4)
+[VIRTIO2] Probe failed
+[INIT] Process manager initialized
+[INIT] System ready
+
+[1;36m    _    ____   ___   ___  ____  
+   / \  |___ \ / _ \ / _ \/ ___| 
+  / _ \   __) | | | | | | \___ \ 
+ / ___ \ / __/| |_| | |_| |___) |
+/_/   \_\_____|\___/ \___/|____/ 
+[0mWelcome to A20OS!
+
+[PROC] user task pid=2 entry=0x10440 sp=0x3ffffe90
+[LIBLINK] copied /lib/ld-linux-riscv64-lp64d.so.1
+[LIBLINK] copied /lib64/ld-linux-riscv64-lp64d.so.1
+[LIBLINK] copied /lib/libgcc_s.so.1
+[LIBLINK] glibc loader ready from /test/glibc/lib
+#### OS COMP TEST GROUP START lmbench-glibc ####
+[CONTEST][RUN] runtime=glibc group=lmbench script=/test/glibc/lmbench_testcode.sh
+#### OS COMP TEST GROUP START lmbench-glibc ####
+latency measurements
+Simple syscall: 27.9630 microseconds
+Simple read: 30.1105 microseconds
+Simple write: 59.3032 microseconds
+Simple stat: 499.6490 microseconds
+Simple fstat: 32.1700 microseconds
+Simple open/close: 279.1859 microseconds
+Select on 100 fd's: 299.6209 microseconds
+Signal handler installation: 30.7641 microseconds
+Signal handler overhead: 105.8198 microseconds
+Protection fault: 8.2748 microseconds
+Pipe latency: 222.3170 microseconds
+Process fork+exit: 1494.4043 microseconds
+Process fork+execve: 1653.9287 microseconds
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+Process fork+/bin/sh -c: 193284.0000 microseconds
+File /var/tmp/XXX write bandwidth:35510 KB/sec
+Pagefaults on /var/tmp/XXX: 25.3149 microseconds
+0.524288 237
+file system latency
+0k	1394	1208	2253
+1k	1109	1105	2248
+4k	967	935	2328
+10k	1015	931	2335
+Bandwidth measurements
+Pipe bandwidth: 40.32 MB/sec
+0.524288 839.32
+0.524288 595.00
+0.524288 6299.04
+0.524288 115.31
+context switch overhead
+
+"size=32k ovr=79.52
+2 48.43
+4 97.62
+8 116.94
+16 128.40
+24 149.25
+32 164.35
+64 193.78
+96 227.26
+#### OS COMP TEST GROUP END lmbench-glibc ####
+[CONTEST][PASS] lmbench-glibc
+#### OS COMP TEST GROUP END lmbench-glibc ####
+#### OS COMP TEST GROUP START libcbench-glibc ####
+[CONTEST][RUN] runtime=glibc group=libcbench script=/test/glibc/libcbench_testcode.sh
+#### OS COMP TEST GROUP START libcbench-glibc ####
+b_malloc_sparse (0)
+  time: 0.376327700, virt: 588, res: 588, dirty: 20
+
+b_malloc_bubble (0)
+  time: 0.472529100, virt: 588, res: 588, dirty: 20
+
+b_malloc_tiny1 (0)
+  time: 0.007943800, virt: 588, res: 588, dirty: 20
+
+b_malloc_tiny2 (0)
+  time: 0.007227200, virt: 588, res: 588, dirty: 20
+
+b_malloc_big1 (0)
+  time: 0.055693800, virt: 588, res: 588, dirty: 20
+
+b_malloc_big2 (0)
+  time: 0.053459300, virt: 588, res: 588, dirty: 20
+
+b_malloc_thread_stress (0)
+  time: 0.099610800, virt: 16972, res: 604, dirty: 28
+
+b_malloc_thread_local (0)
+  time: 0.083339700, virt: 16972, res: 604, dirty: 28
+
+b_string_strstr ("abcdefghijklmnopqrstuvwxyz")
+  time: 0.032117000, virt: 588, res: 588, dirty: 20
+
+b_string_strstr ("azbycxdwevfugthsirjqkplomn")
+  time: 0.019248600, virt: 588, res: 588, dirty: 20
+
+b_string_strstr ("aaaaaaaaaaaaaacccccccccccc")
+  time: 0.028003800, virt: 588, res: 588, dirty: 20
+
+b_string_strstr ("aaaaaaaaaaaaaaaaaaaaaaaaac")
+  time: 0.019728000, virt: 588, res: 588, dirty: 20
+
+b_string_strstr ("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaac")
+  time: 0.027512200, virt: 588, res: 588, dirty: 20
+
+b_string_memset (0)
+  time: 0.005946700, virt: 588, res: 588, dirty: 20
+
+b_string_strchr (0)
+  time: 0.018649700, virt: 588, res: 588, dirty: 20
+
+b_string_strlen (0)
+  time: 0.019286600, virt: 588, res: 588, dirty: 20
+
+b_pthread_createjoin_serial1 (0)
+  time: 1.573020400, virt: 8780, res: 596, dirty: 28
+
+b_pthread_createjoin_serial2 (0)
+  time: 3.994077200, virt: 16972, res: 604, dirty: 28
+
+b_pthread_create_serial1 (0)
+  time: 1.672573900, virt: 620, res: 604, dirty: 28
+
+b_pthread_uselesslock (0)
+  time: 0.277342400, virt: 8780, res: 596, dirty: 28
+
+b_utf8_bigbuf (0)
+  time: 0.004446400, virt: 588, res: 588, dirty: 24
+
+b_utf8_onebyone (0)
+  time: 0.002006300, virt: 588, res: 588, dirty: 24
+
+b_stdio_putcgetc (0)
+  time: 0.511874500, virt: 588, res: 588, dirty: 20
+
+b_stdio_putcgetc_unlocked (0)
+  time: 0.424721600, virt: 588, res: 588, dirty: 20
+
+b_regex_compile ("(a|b|c)*d*b")
+  time: 0.033747500, virt: 588, res: 588, dirty: 24
+
+b_regex_search ("(a|b|c)*d*b")
+  time: 0.012292300, virt: 588, res: 588, dirty: 24
+
+b_regex_search ("a{25}b")
+  time: 0.234771300, virt: 588, res: 588, dirty: 24
+
+#### OS COMP TEST GROUP END libcbench-glibc ####
+[CONTEST][PASS] libcbench-glibc
+#### OS COMP TEST GROUP END libcbench-glibc ####
+#### OS COMP TEST GROUP START lmbench-musl ####
+[CONTEST][RUN] runtime=musl group=lmbench script=/test/musl/lmbench_testcode.sh
+#### OS COMP TEST GROUP START lmbench-musl ####
+latency measurements
+Simple syscall: 26.6247 microseconds
+Simple read: 27.8036 microseconds
+Simple write: 55.7446 microseconds
+Simple stat: 497.9264 microseconds
+Simple fstat: 36.0460 microseconds
+Simple open/close: 303.0083 microseconds
+Select on 100 fd's: 295.8553 microseconds
+Signal handler installation: 30.8849 microseconds
+Signal handler overhead: 77.2456 microseconds
+Protection fault: 40.0448 microseconds
+Pipe latency: 257.3001 microseconds
+Process fork+exit: 1360.6543 microseconds
+Process fork+execve: 1466.4832 microseconds
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+[ELF] read header failed: r=51 need=64 path='/tmp/hello'
+[ELF] read header failed: r=34 need=64 path='/code/lmbench_src/bin/build/lmbench_all'
+Hello world
+Process fork+/bin/sh -c: 193045.8333 microseconds
+File /var/tmp/XXX write bandwidth:28523 KB/sec
+Pagefaults on /var/tmp/XXX: 24.9046 microseconds
+0.524288 205
+file system latency
+0k	1049	963	2013
+1k	999	915	2033
+4k	914	885	2015
+10k	864	783	1981
+Bandwidth measurements
+Pipe bandwidth: 35.26 MB/sec
+0.524288 913.30
+0.524288 634.25
+0.524288 7783.42
+0.524288 186.58
+context switch overhead
+
+"size=32k ovr=44.89
+2 81.38
+4 84.98
+8 86.11
+16 92.51
+24 97.47
+32 103.27
+64 126.12
+96 153.66
+#### OS COMP TEST GROUP END lmbench-musl ####
+[CONTEST][PASS] lmbench-musl
+#### OS COMP TEST GROUP END lmbench-musl ####
+#### OS COMP TEST GROUP START libcbench-musl ####
+[CONTEST][RUN] runtime=musl group=libcbench script=/test/musl/libcbench_testcode.sh
+#### OS COMP TEST GROUP START libcbench-musl ####
+b_malloc_sparse (0)
+  time: 0.578258300, virt: 120, res: 120, dirty: 4
+
+b_malloc_bubble (0)
+  time: 0.549770200, virt: 120, res: 120, dirty: 4
+
+b_malloc_tiny1 (0)
+  time: 0.012605200, virt: 120, res: 120, dirty: 4
+
+b_malloc_tiny2 (0)
+  time: 0.010020000, virt: 120, res: 120, dirty: 4
+
+b_malloc_big1 (0)
+  time: 0.102320200, virt: 120, res: 120, dirty: 4
+
+b_malloc_big2 (0)
+  time: 0.097564700, virt: 120, res: 120, dirty: 4
+
+b_malloc_thread_stress (0)
+  time: 0.082439200, virt: 120, res: 120, dirty: 4
+
+b_malloc_thread_local (0)
+  time: 0.082348500, virt: 120, res: 120, dirty: 4
+
+b_string_strstr ("abcdefghijklmnopqrstuvwxyz")
+  time: 0.033677700, virt: 120, res: 120, dirty: 4
+
+b_string_strstr ("azbycxdwevfugthsirjqkplomn")
+  time: 0.043433400, virt: 120, res: 120, dirty: 4
+
+b_string_strstr ("aaaaaaaaaaaaaacccccccccccc")
+  time: 0.033026100, virt: 120, res: 120, dirty: 4
+
+b_string_strstr ("aaaaaaaaaaaaaaaaaaaaaaaaac")
+  time: 0.033205300, virt: 120, res: 120, dirty: 4
+
+b_string_strstr ("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaac")
+  time: 0.040541100, virt: 120, res: 120, dirty: 4
+
+b_string_memset (0)
+  time: 0.009016400, virt: 120, res: 120, dirty: 4
+
+b_string_strchr (0)
+  time: 0.029024800, virt: 120, res: 120, dirty: 4
+
+b_string_strlen (0)
+  time: 0.029341000, virt: 120, res: 120, dirty: 4
+
+b_pthread_createjoin_serial1 (0)
+  time: 0.973540900, virt: 120, res: 120, dirty: 4
+
+b_pthread_createjoin_serial2 (0)
+  time: 0.918634900, virt: 120, res: 120, dirty: 4
+
+b_pthread_create_serial1 (0)
+  time: 1.281300100, virt: 160, res: 128, dirty: 12
+
+b_pthread_uselesslock (0)
+  time: 0.072768100, virt: 120, res: 120, dirty: 4
+
+b_utf8_bigbuf (0)
+  time: 0.088424500, virt: 120, res: 120, dirty: 4
+
+b_utf8_onebyone (0)
+  time: 0.153543400, virt: 120, res: 120, dirty: 4
+
+b_stdio_putcgetc (0)
+  time: 42.371721300, virt: 120, res: 120, dirty: 4
+
+b_stdio_putcgetc_unlocked (0)
+  time: 42.269617900, virt: 120, res: 120, dirty: 4
+
+b_regex_compile ("(a|b|c)*d*b")
+  time: 0.077891000, virt: 120, res: 120, dirty: 4
+
+b_regex_search ("(a|b|c)*d*b")
+  time: 0.112879500, virt: 120, res: 120, dirty: 4
+
+b_regex_search ("a{25}b")
+  time: 0.283502200, virt: 120, res: 120, dirty: 4
+
+#### OS COMP TEST GROUP END libcbench-musl ####
+[CONTEST][PASS] libcbench-musl
+#### OS COMP TEST GROUP END libcbench-musl ####
+[CONTEST] Done
+System is going down for power-off NOW.
+[runner] QEMU exited, log at /home/fq/project/oskernel2025-a20/test-results/20260626-e832db1-bench-focus/serial-rv-rust.txt

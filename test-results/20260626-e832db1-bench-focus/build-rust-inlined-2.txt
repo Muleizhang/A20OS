@@ -1,0 +1,48 @@
+rustc --edition 2021 --crate-type rlib -C opt-level=3 -C panic=abort --target riscv64imac-unknown-none-elf  --crate-name a20rust_support kernel/rust/support/panic_handler.rs -o .kernel-build/riscv64-both-dev/rust/liba20rust_support.rlib
+riscv64-unknown-elf-gcc -Wall -Wextra -O3 -ffreestanding -nostdlib -nostartfiles -fno-builtin -fno-common -std=gnu99 -MMD -MP -Ikernel/include -Ikernel -Ikernel/net/lwip_port -Ikernel/external/lwip/src/include -Ikernel/arch/riscv64/include -Ikernel/platform/qemu-virt-riscv64 -I.kernel-build/riscv64-both-dev/generated -march=rv64imafdc_zicsr_zifencei -mabi=lp64 -mcmodel=medany -DRISCV64 -DCONFIG_RISCV64 -DCONFIG_ABI_BOTH -DCONFIG_NR_CPUS=1 -DCONFIG_BOARD_QEMU_VIRT_RISCV64 -DCONFIG_ABI_NATIVE -c kernel/rust/support/vfs_types_check.c -o .kernel-build/riscv64-both-dev/rust/vfs_types_check.o
+kernel/rust/support/vfs_types_check.c:13:16: error: implicit declaration of function 'alignof' [-Wimplicit-function-declaration]
+   13 | _Static_assert(alignof(refcount_t) == 4, "Rust refcount_t alignment mismatch");
+      |                ^~~~~~~
+kernel/rust/support/vfs_types_check.c:13:24: error: expected expression before 'refcount_t'
+   13 | _Static_assert(alignof(refcount_t) == 4, "Rust refcount_t alignment mismatch");
+      |                        ^~~~~~~~~~
+kernel/rust/support/vfs_types_check.c:13:16: error: expression in static assertion is not an integer
+   13 | _Static_assert(alignof(refcount_t) == 4, "Rust refcount_t alignment mismatch");
+      |                ^~~~~~~
+kernel/rust/support/vfs_types_check.c:16:24: error: expected expression before 'spinlock_t'
+   16 | _Static_assert(alignof(spinlock_t) == 4, "Rust spinlock_t alignment mismatch");
+      |                        ^~~~~~~~~~
+kernel/rust/support/vfs_types_check.c:16:16: error: expression in static assertion is not an integer
+   16 | _Static_assert(alignof(spinlock_t) == 4, "Rust spinlock_t alignment mismatch");
+      |                ^~~~~~~
+kernel/rust/support/vfs_types_check.c:19:24: error: expected expression before 'wait_queue_t'
+   19 | _Static_assert(alignof(wait_queue_t) == 8, "Rust wait_queue_t alignment mismatch");
+      |                        ^~~~~~~~~~~~
+kernel/rust/support/vfs_types_check.c:19:16: error: expression in static assertion is not an integer
+   19 | _Static_assert(alignof(wait_queue_t) == 8, "Rust wait_queue_t alignment mismatch");
+      |                ^~~~~~~
+kernel/rust/support/vfs_types_check.c:22:24: error: expected expression before 'mutex_t'
+   22 | _Static_assert(alignof(mutex_t) == 8, "Rust mutex_t alignment mismatch");
+      |                        ^~~~~~~
+kernel/rust/support/vfs_types_check.c:22:16: error: expression in static assertion is not an integer
+   22 | _Static_assert(alignof(mutex_t) == 8, "Rust mutex_t alignment mismatch");
+      |                ^~~~~~~
+kernel/rust/support/vfs_types_check.c:39:24: error: expected expression before 'vfile_t'
+   39 | _Static_assert(alignof(vfile_t) == 8, "Rust vfile_t alignment mismatch");
+      |                        ^~~~~~~
+kernel/rust/support/vfs_types_check.c:39:16: error: expression in static assertion is not an integer
+   39 | _Static_assert(alignof(vfile_t) == 8, "Rust vfile_t alignment mismatch");
+      |                ^~~~~~~
+make: *** [Makefile:1298: .kernel-build/riscv64-both-dev/rust/vfs_types_check.o] Error 1
+make: *** Waiting for unfinished jobs....
+warning: the feature `lang_items` is internal to the compiler or standard library
+ --> kernel/rust/support/panic_handler.rs:8:12
+  |
+8 | #![feature(lang_items)]
+  |            ^^^^^^^^^^
+  |
+  = note: using it is strongly discouraged
+  = note: `#[warn(internal_features)]` on by default
+
+warning: 1 warning emitted
+

@@ -1,0 +1,13 @@
+find kernel -name '*.o' -delete
+rm -rf .kernel-build
+rm -f kernel.elf kernel.bin fat32.img ext4.img
+rm -f kernel-rv kernel-la disk.img disk-la.img
+make -C user clean
+make[1]: Entering directory '/home/fq/project/oskernel2025-a20/user'
+rm -f external/mksh-cvs2git/*.o lib/*.o
+find /home/fq/project/oskernel2025-a20/user/external/musl \( -path '/home/fq/project/oskernel2025-a20/user/external/musl/build-*/*.lo' -o -path '/home/fq/project/oskernel2025-a20/user/external/musl/build-*/lib/libc.so' \) -delete
+make[1]: Leaving directory '/home/fq/project/oskernel2025-a20/user'
+make -f user/extra.mk clean 2>/dev/null || true
+make[1]: Entering directory '/home/fq/project/oskernel2025-a20'
+rm -rf /home/fq/project/oskernel2025-a20/user/build/extra
+make[1]: Leaving directory '/home/fq/project/oskernel2025-a20'
