@@ -88,6 +88,7 @@ make ARCH=aarch64 BOARD=qemu-virt-aarch64 run
 
 有关操作系统设计的完整方案、开发过程中的技术瓶颈、解决思路以及并发模型设计，请参阅：
 * [操作系统设计方案文档 (OS-Design.md)](docs/OS-Design.md)
+* [初赛汇报幻灯片 (PDF)](docs/slides/main.pdf) | [LaTeX 源文件](docs/slides/main.tex)
 
 ## 目录结构
 ```text

@@ -1,0 +1,29 @@
+\frametitle{Channel/EventQ：异步 IPC 协议}
+    \begin{columns}
+        \begin{column}{0.52\textwidth}
+            \footnotesize
+            \begin{itemize}
+                \item \textbf{两阶段写入}：reserve 槽位 $\rightarrow$ 拷贝数据 $\rightarrow$ commit；失败可 abort
+                \item \textbf{Handle 共享传递}：消息 commit 后源进程仍保留 Handle，对象引用计数递增
+                \item \textbf{EventQ}：每个进程一个，Channel 就绪时通过 \code{a20\_event\_signal} 通知
+                \item \textbf{等待}：\code{a20\_event\_wait} 多路复用，支持 deadline 和可中断
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.45\textwidth}
+            \begin{lstlisting}[basicstyle=\ttfamily\tiny]
+// Two-phase channel write
+a20_channel_call_args_t args = {
+    .channel = ch,
+    .data = buf, .data_len = n,
+    .handles = &h, .handle_count = 1,
+};
+a20_channel_call(&args, &reply);
+            \end{lstlisting}
+        \end{column}
+    \end{columns}
+    \vspace{0.3em}
+    \begin{block}{保证}
+        \footnotesize
+        消息要么完整交付（数据 + 所有 Handle），要么完全不交付；不存在半包或 Handle 重复。
+    \end{block}
+    \small 关键文件：\code{docs/native-abi/05-ipc.md}、\code{kernel/ipc/a20\_channel.c}
