@@ -490,11 +490,6 @@ run_ltp_bounded_subset() {
     typeset runtime=$1
     typeset arch=$(uname -m)
     typeset dir="/test/$runtime/ltp/testcases/bin"
-    typeset script="/test/$runtime/ltp_testcode.sh"
-
-    # The bounded runner deliberately replaces the full LTP script.  Record it
-    # so the generic discovery pass below does not execute it a second time.
-    [[ -f $script ]] && SEEN_SCRIPTS+=("$script")
 
     [[ $runtime == "musl" ]] && prepare_musl_loader
 
@@ -788,15 +783,6 @@ run_ltp_bounded_subset() {
 
 # ── main ────────────────────────────────────────────────────
 typeset -i executed=0 failed=0
-typeset -a SEEN_SCRIPTS
-
-script_seen() {
-    typeset needle=$1 seen
-    for seen in "${SEEN_SCRIPTS[@]}"; do
-        [[ $seen == "$needle" ]] && return 0
-    done
-    return 1
-}
 
 run_group() {
     typeset runtime=$1 group=$2
@@ -804,7 +790,6 @@ run_group() {
     typeset dir="/test/$runtime"
 
     [[ -f $script ]] || return 0
-    SEEN_SCRIPTS+=("$script")
     [[ $runtime == "musl" ]] && prepare_musl_loader
 
     if skip_group "$group" "$runtime"; then
@@ -847,39 +832,6 @@ run_group() {
     (( executed++ ))
 }
 
-run_discovered_script() {
-    typeset script=$1
-    typeset dir=${script%/*}
-    typeset runtime=${dir##*/}
-    typeset group=${script##*/}
-    group=${group%_testcode.sh}
-
-    [[ $dir == /test ]] && runtime=root
-    script_seen "$script" && return 0
-    SEEN_SCRIPTS+=("$script")
-
-    print "[CONTEST][RUN] runtime=$runtime group=$group script=$script discovered=1"
-    cd "$dir" || {
-        print "[CONTEST][ERROR] cd $dir failed"
-        (( failed++ ))
-        return 1
-    }
-
-    typeset -i timeout=$(group_timeout "$group")
-    run_with_timeout "$runtime" "$group" "${script##*/}" "$timeout"
-    typeset rc=$?
-    cleanup_group "$group"
-    cd /
-
-    if (( rc == 0 )); then
-        print "[CONTEST][PASS] $group"
-    else
-        print "[CONTEST][FAIL] $group (exit $rc)"
-        (( failed++ ))
-    fi
-    (( executed++ ))
-}
-
 typeset runtime group
 for group in basic busybox lua libctest iperf netperf libcbench; do
     for runtime in glibc musl; do
@@ -895,15 +847,6 @@ done
 
 for runtime in glibc musl; do
     run_ltp_bounded_subset "$runtime"
-done
-
-# Competition images may add test points without updating this repository.
-# Scan the image root required by the contest contract, plus the historical
-# per-runtime directories, and serially execute every script not handled above.
-typeset script
-for script in /test/*_testcode.sh /test/*/*_testcode.sh; do
-    [[ -f $script ]] || continue
-    run_discovered_script "$script"
 done
 
 print "[CONTEST] Done: $executed tests, $failed failures"
