@@ -402,6 +402,7 @@ KERNEL_BIN = $(BUILD_DIR)/kernel.bin
 		check-kernel-build check-user-build check-dev-build check-contest-build check-build-matrix check-abi-smoke-gate check-doc-drift check-doc-test-gates check-final-definition check-concurrency-foundation check-mm-lock-model check-abi-boundary check-driver-core-model check-external-dependency-boundary \
 		check-arch-boundary \
 		check-riscv64-bringup check-loongarch64-bringup check-aarch64-bringup check-x86_64-bringup check-arm32-bringup check-riscv32-bringup check-ppc64le-bringup \
+		check-contest-discovery \
 		check-riscv64-user check-loongarch64-user check-aarch64-user check-x86_64-user check-arm32-user check-riscv32-user check-ppc64le-user \
 		smoke-riscv64 smoke-loongarch64 smoke-aarch64 smoke-x86_64 smoke-arm32 smoke-riscv32 smoke-ppc64le smoke-abi-linux smoke-network-suite smoke-proc-a20 smoke-proc-stress smoke-mm-stress smoke-vfs-stress smoke-vfs-edge smoke-sched-stress smoke-futex-stress smoke-socket-stress smoke-driver-lifecycle smoke-native-handle smoke-native-libc smoke-io-event \
 		smoke-arch-mmu-matrix \
@@ -1179,6 +1180,9 @@ contest-la:
 	@echo "--- Building LoongArch 64 (contest) ---"
 	$(MAKE) ARCH=loongarch64 _contest_build KERNEL_OUT=kernel-la DISK_OUT=disk-la.img
 
+check-contest-discovery: contest-rv
+	sh ./scripts/check_contest_discovery.sh
+
 _reset_obj:
 	find $(KERNEL_DIR) -name '*.o' -delete
 	rm -rf .kernel-build
@@ -1186,7 +1190,7 @@ _reset_obj:
 
 _contest_build: $(KERNEL_ELF) $(USER_BUILD_STAMP) $(NATIVE_BUILD_STAMP)
 	$(MAKE) ARCH=$(ARCH) ABI=$(ABI) _contest_disk
-	cp $(KERNEL_ELF) $(KERNEL_OUT)
+	@dd if=$(KERNEL_ELF) of=$(KERNEL_OUT) bs=1M status=none
 	@echo "  -> $(KERNEL_OUT) + $(DISK_OUT)"
 
 _contest_disk: $(USER_BUILD_STAMP)
