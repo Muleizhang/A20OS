@@ -46,6 +46,7 @@ A20OS 是一款探索现代操作系统架构边界的高级混合内核 (Hybrid
 A20OS 具备优秀的跨平台移植性，硬件抽象层 (HAL) 目前官方支持和维护以下目标：
 * **虚拟机环境 (QEMU)**：`qemu-virt-riscv64`, `qemu-virt-aarch64`, `qemu-virt-x86_64`, `qemu-virt-loongarch64`
 * **物理开发板**：星光 2 (StarFive VisionFive 2)、龙芯 (Loongson LS2K1000)
+* **MCU bring-up**：STM32F103（ARMv7-M/Cortex-M3，NOMMU；当前提供启动、USART1、SysTick 与基础堆）
 
 ## 构建与运行
 
@@ -67,6 +68,15 @@ make ARCH=riscv64 BOARD=qemu-virt-riscv64 run
 
 # 构建其他架构 (例: aarch64)
 make ARCH=aarch64 BOARD=qemu-virt-aarch64 run
+
+# STM32F103 64 KiB Flash / 20 KiB SRAM 固件
+make stm32f103-bringup
+
+# 普中玄武 STM32F103ZET6（512 KiB Flash / 64 KiB SRAM）
+make stm32f103-xuanwu
+
+# 使用 QEMU STM32VLDISCOVERY（128 KiB Flash / 8 KiB SRAM）验证基础 bring-up
+make run-stm32f103-qemu
 ```
 
 *高级编译选项：*
