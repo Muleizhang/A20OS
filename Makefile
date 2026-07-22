@@ -1958,7 +1958,7 @@ extra-img: extra-user-apps prepare-riscv64-glibc-sysroot
 		}; \
 		cp -a "$$RUST" "$(EXTRA_STAGING_DIR)/rust"; \
 		printf '#!/bin/sh\nexec /test/rust/bin/rustc --target riscv64gc-unknown-linux-musl -C linker=/test/rust/lib/rustlib/riscv64gc-unknown-linux-gnu/bin/rust-lld -C relocation-model=static -C link-arg=-L/test/rust/a20-sysroot/lib -C link-arg=-static -C link-arg=/test/rust/a20-sysroot/lib/crt1.o -C link-arg=/test/rust/a20-sysroot/lib/crti.o -C link-arg=/test/rust/a20-sysroot/lib/crtn.o "$$@"\n' > "$(EXTRA_STAGING_DIR)/bin/rustc"; \
-		printf '#!/bin/sh\nexport CARGO_HOME=/test/rust\nexport RUSTC=/test/rust/bin/rustc\nexport CARGO_BUILD_TARGET=riscv64gc-unknown-linux-musl\nexec /test/rust/bin/cargo "$$@"\n' > "$(EXTRA_STAGING_DIR)/bin/cargo"; \
+		printf '#!/bin/sh\nexport RUSTC=/test/rust/bin/rustc\nexport CARGO_BUILD_TARGET=riscv64gc-unknown-linux-musl\nexec /test/rust/bin/cargo --config /test/rust/config.toml "$$@"\n' > "$(EXTRA_STAGING_DIR)/bin/cargo"; \
 		printf '[target.riscv64gc-unknown-linux-musl]\nlinker = "/test/rust/lib/rustlib/riscv64gc-unknown-linux-gnu/bin/rust-lld"\nrustflags = ["-C", "relocation-model=static", "-C", "link-arg=-L/test/rust/a20-sysroot/lib", "-C", "link-arg=-static", "-C", "link-arg=/test/rust/a20-sysroot/lib/crt1.o", "-C", "link-arg=/test/rust/a20-sysroot/lib/crti.o", "-C", "link-arg=/test/rust/a20-sysroot/lib/crtn.o"]\n' > "$(EXTRA_STAGING_DIR)/rust/config.toml"; \
 		chmod 0755 "$(EXTRA_STAGING_DIR)/bin/rustc" "$(EXTRA_STAGING_DIR)/bin/cargo"; \
 		mkdir -p "$(EXTRA_STAGING_DIR)/glibc/lib"; \
