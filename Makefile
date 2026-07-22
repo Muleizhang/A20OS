@@ -1969,12 +1969,12 @@ extra-img: extra-user-apps prepare-riscv64-glibc-sysroot
 	@VIM_RT="$(EXTRA_STAGING_DIR)/share/vim/vim92"; \
 	VIM_SRC=user/external/vim/runtime; \
 	if [ -n "$(filter vim,$(EXTRA_PACKAGES))" ]; then mkdir -p "$$VIM_RT"; else exit 0; fi; \
-	for f in defaults.vim filetype.vim ftoff.vim ftplugin.vim ftplugof.vim; do \
+	for f in defaults.vim filetype.vim ftoff.vim ftplugin.vim ftplugof.vim indent.vim indoff.vim; do \
 		[ -f "$$VIM_SRC/$$f" ] && cp "$$VIM_SRC/$$f" "$$VIM_RT/$$f"; \
 	done; \
-	for d in syntax indent; do \
+	for d in syntax indent ftplugin autoload; do \
 		mkdir -p "$$VIM_RT/$$d"; \
-		cp -a "$$VIM_SRC/$$d/"*.vim "$$VIM_RT/$$d/" 2>/dev/null || true; \
+		cp -a "$$VIM_SRC/$$d/." "$$VIM_RT/$$d/"; \
 	done
 	@GIT_TEMPLATE_SRC=user/external/git/templates/blt; \
 	GIT_TEMPLATE_DST="$(EXTRA_STAGING_DIR)/share/git-core/templates"; \
