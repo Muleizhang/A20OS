@@ -2277,12 +2277,20 @@ $(WAYLAND_PLAYER_STAMP): user/wayland/build.sh user/wayland/player.c \
 	user/wayland/build.sh $(ARCH)
 
 $(GUI_FAT32_IMG): $(FAT32_IMG) $(GUI_WAYLAND_DEPS)
-	cp $(FAT32_IMG) $(GUI_FAT32_IMG)
-	@printf '1\n' | mcopy -o -i $(GUI_FAT32_IMG) - ::/etc/a20-gui
-	@printf '1\n' | mcopy -o -i $(GUI_FAT32_IMG) - ::/a20-gui
-	@if [ "$(WAYLAND_GUI)" = 1 ]; then \
-		user/wayland/install-image.sh $(GUI_FAT32_IMG) $(ARCH) "$(GUI_MEDIA)"; \
-	fi
+	@set -e; \
+	lock="$(GUI_FAT32_IMG).lock"; \
+	tmp="$(GUI_FAT32_IMG).tmp.$$$$"; \
+	exec 9>"$$lock"; \
+	flock 9; \
+	trap 'rm -f "$$tmp"' EXIT INT TERM; \
+	cp "$(FAT32_IMG)" "$$tmp"; \
+	printf '1\n' | mcopy -o -i "$$tmp" - ::/etc/a20-gui; \
+	printf '1\n' | mcopy -o -i "$$tmp" - ::/a20-gui; \
+	if [ "$(WAYLAND_GUI)" = 1 ]; then \
+		user/wayland/install-image.sh "$$tmp" $(ARCH) "$(GUI_MEDIA)"; \
+	fi; \
+	mv -f "$$tmp" "$(GUI_FAT32_IMG)"; \
+	trap - EXIT INT TERM
 
 $(FS_TEST_IMG): $(FAT32_IMG)
 	cp $(FAT32_IMG) $(FS_TEST_IMG)
