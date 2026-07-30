@@ -3,6 +3,10 @@
 # Usage: user/wayland/install-image.sh <fat32.img> [ARCH] [media.mp4]
 set -euo pipefail
 
+# A second GUI build must fail quickly instead of leaving the terminal waiting
+# inside mtools while another process owns the image.
+export MTOOLS_LOCK_TIMEOUT=${MTOOLS_LOCK_TIMEOUT:-5}
+
 IMG=$1
 ARCH=${2:-riscv64}
 USER_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
